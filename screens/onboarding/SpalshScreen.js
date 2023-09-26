@@ -23,17 +23,9 @@ export default function SplashScreen({ navigation, route }) {
   }, 4000);
   return (
     <SafeAreaView style={style.contianer}>
-      <Animated.View
-        style={[
-          {
-            opacity: fadeAnim,
-          },
-        ]}
-      >
-        <Image style={style.img} source={Logo} />
-      </Animated.View>
+      <Image style={style.img} source={Logo} />
 
-      <Text style={style.title}>PlantIt</Text>
+      {/* <Text style={style.title}>PlantIt</Text> */}
     </SafeAreaView>
   );
 }
@@ -47,8 +39,8 @@ const style = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   img: {
-    height: 250,
-    width: 250,
+    height: 300,
+    width: 300,
     objectFit: "fill",
   },
   title: {
