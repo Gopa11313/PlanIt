@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, Pressable } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  Pressable,
+  StatusBar,
+  View,
+} from "react-native";
 import PagerView from "react-native-pager-view";
 export default function WelcomePageScreen({ navigation, route }) {
   useEffect(() => {}, []);
