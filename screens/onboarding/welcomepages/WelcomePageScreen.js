@@ -17,11 +17,7 @@ export default function WelcomePageScreen({ navigation, route }) {
   useEffect(() => {}, []);
   const [pressedItemm, setPressedItem] = useState(0);
   const onNextPress = () => {
-    if (pressedItemm === 2) {
-      navigation.navigate("LoginScreen");
-    } else {
-      setPressedItem(pressedItemm + 1);
-    }
+    navigation.navigate("LoginScreen");
   };
   return (
     <SafeAreaView style={style.contianer}>
@@ -80,13 +76,13 @@ const style = StyleSheet.create({
   },
   page: {
     flex: 1,
-    justifyContent: "center", // Horizontal center
+    justifyContent: "center",
     alignItems: "center",
   },
   btnCase: {
     color: "white",
     height: "5%",
-    width: 90,
+    width: 100,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
