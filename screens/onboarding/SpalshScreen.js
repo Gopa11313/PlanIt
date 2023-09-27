@@ -19,13 +19,15 @@ export default function SplashScreen({ navigation, route }) {
     }).start();
   };
   useEffect(() => {
-    navigation.navigate("WelcomePage");
-  }, 4000);
+    const timer = setTimeout(() => {
+      navigation.navigate("WelcomePage");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <SafeAreaView style={style.contianer}>
       <Image style={style.img} source={Logo} />
-
-      {/* <Text style={style.title}>PlantIt</Text> */}
     </SafeAreaView>
   );
 }
