@@ -1,18 +1,17 @@
-import { useEffect } from "react";
-import { StatusBar, Text } from "react-native";
-import { SafeAreaView, StyleSheet, TextInput } from "react-native";
+import { Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function SignUpScreen({ navigation, route }) {
+const SignUp = ({ navigation }) => {
   const handleSignUp = () => {
-    navigation.navigate("Dashboard");
+    navigation.navigate("Home");
   };
 
   const gotoLogin = () => {
     navigation.navigate("Login");
   };
-  useEffect(() => {}, []);
+
   return (
-    <SafeAreaView style={style.contianer}>
+    <SafeAreaView style={styles.container}>
       <TextInput placeholder="Full Name" />
       <TextInput placeholder="Email" />
       <TextInput placeholder="Username" />
@@ -28,10 +27,16 @@ export default function SignUpScreen({ navigation, route }) {
       </Pressable>
     </SafeAreaView>
   );
-}
-const style = StyleSheet.create({
-  contianer: {
+};
+
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
 });
+
+export default SignUp;
