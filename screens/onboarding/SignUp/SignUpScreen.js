@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Text } from "react-native";
+import { StatusBar, Text } from "react-native";
 import { SafeAreaView, StyleSheet } from "react-native";
 
 export default function SignUpScreen({ navigation, route }) {

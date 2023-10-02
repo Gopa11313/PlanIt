@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { SafeAreaView, StyleSheet, Text, StatusBar } from "react-native";
 export default function LoginScreen({ navigation, rute }) {
   useEffect(() => {}, []);
   return (
