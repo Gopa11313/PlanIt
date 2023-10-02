@@ -5,6 +5,7 @@ import SplashScreen from "./screens/onboarding/SpalshScreen";
 import WelcomePageScreen from "./screens/onboarding/welcomepages/WelcomePageScreen";
 import LoginScreen from "./screens/onboarding/login/LoginScreen";
 import SignUpScreen from "./screens/onboarding/SignUp/SignUpScreen";
+import Dashboard from "./screens/dashBoard/Dashboard";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -28,6 +29,11 @@ export default function App() {
         <Stack.Screen
           name="SignUpScreen"
           component={SignUpScreen}
+          options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
           options={{ headerShown: false }}
         ></Stack.Screen>
       </Stack.Navigator>
