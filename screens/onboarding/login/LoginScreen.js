@@ -1,16 +1,17 @@
-import { useEffect } from "react";
+import React from "react";
 import { StyleSheet, Pressable, TextInput, Text } from "react-native";
-export default function LoginScreen({ navigation, rute }) {
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const Login = ({ navigation }) => {
   const handleLogIn = () => {
-    navigation.navigate("Dashboard");
+    navigation.navigate("Home");
   };
 
   const gotoSignUp = () => {
     navigation.navigate("SignUp");
   };
-  useEffect(() => {}, []);
   return (
-    <SafeAreaView style={style.container}>
+    <SafeAreaView style={styles.container}>
       <TextInput placeholder="Email/Username" />
       <TextInput placeholder="Password" />
       <Pressable onPress={handleLogIn}>
@@ -23,10 +24,16 @@ export default function LoginScreen({ navigation, rute }) {
       </Pressable>
     </SafeAreaView>
   );
-}
-const style = StyleSheet.create({
-  contianer: {
+};
+
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
 });
+
+export default Login;
