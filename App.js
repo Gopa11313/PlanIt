@@ -1,46 +1,45 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import Login from "./screens/Login";
-import SignUp from "./screens/SignUp";
-import Splash from "./screens/Splash";
-import Home from "./screens/bottom_Nav/Home";
-import SelectionScreen from "./screens/SelectionScreen";
-import { createStackNavigator } from "@react-navigation/stack";
+import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import * as React from "react";
-
-const StackView = createStackNavigator();
-
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SplashScreen from "./screens/onboarding/SpalshScreen";
+import WelcomePageScreen from "./screens/onboarding/welcomepages/WelcomePageScreen";
+import LoginScreen from "./screens/onboarding/login/LoginScreen";
+import SignUpScreen from "./screens/onboarding/SignUp/SignUpScreen";
+const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <StackView.Navigator initialRoute="SelectionScreen">
-        {/* <StackView.Screen
+      <Stack.Navigator initialRouteName="Splash">
+        <Stack.Screen
           name="Splash"
-          component={Splash}
+          component={SplashScreen}
           options={{ headerShown: false }}
-        ></StackView.Screen> */}
-        <StackView.Screen
-          name="SelectionScreen"
-          component={SelectionScreen}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="WelcomePage"
+          component={WelcomePageScreen}
           options={{ headerShown: false }}
-        ></StackView.Screen>
-        <StackView.Screen
-          name="Login"
-          component={Login}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginScreen}
           options={{ headerShown: false }}
-        ></StackView.Screen>
-        <StackView.Screen
-          name="SignUp"
-          component={SignUp}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="SignUpScreen"
+          component={SignUpScreen}
           options={{ headerShown: false }}
-        ></StackView.Screen>
-        {/* <StackView.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        ></StackView.Screen> */}
-      </StackView.Navigator>
+        ></Stack.Screen>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
