@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Login = ({ navigation }) => {
   const handleLogIn = () => {
-    navigation.navigate("Home");
+    navigation.navigate("Dashboard");
   };
 
   const gotoSignUp = () => {
