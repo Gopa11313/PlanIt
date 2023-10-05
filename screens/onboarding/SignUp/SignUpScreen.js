@@ -3,11 +3,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignUp = ({ navigation }) => {
   const handleSignUp = () => {
-    navigation.navigate("Home");
+    navigation.navigate("Dashboard");
   };
 
   const gotoLogin = () => {
-    navigation.navigate("Login");
+    navigation.navigate("LoginScreen");
   };
 
   return (
