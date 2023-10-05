@@ -4,10 +4,10 @@ import {
   SafeAreaView,
   StyleSheet,
   Pressable,
-  TextInput,
   Text,
   View,
 } from "react-native";
+import { TextInput } from "react-native-paper";
 
 export default function LoginScreen({ navigation, rute }) {
   const handleLogIn = () => {
@@ -19,25 +19,42 @@ export default function LoginScreen({ navigation, rute }) {
   };
 
   useEffect(() => {}, []);
+
   return (
     <SafeAreaView style={style.container}>
       <View>
         <Text style={style.appName}>PlanIt</Text>
       </View>
+
       <View style={style.inputContainer}>
-        <TextInput placeholder="Email/Username" />
-        <TextInput placeholder="Password" />
+        <TextInput
+          label="Email"
+          right={<TextInput.Icon icon="email" />}
+          mode="flat"
+          style={{ margin: 10, backgroundColor: "#ededed" }}
+          activeUnderlineColor="#4285F4"
+          underlineColor="yellow"
+        />
+        <TextInput
+          label="password"
+          secureTextEntry
+          right={<TextInput.Icon icon="eye" />}
+          style={{ margin: 10, backgroundColor: "#ededed" }}
+          activeUnderlineColor="#4285F4"
+          underlineColor="yellow"
+        />
       </View>
 
       <View style={style.loginButton}>
         <Pressable onPress={handleLogIn}>
-          <Text style={style.loginButton}>Login</Text>
+          <Text style={style.buttonText}>Login</Text>
         </Pressable>
       </View>
 
       <View style={style.gotoSignUp}>
+        <Text>New Here? </Text>
         <Pressable onPress={gotoSignUp}>
-          <Text>Sign Up</Text>
+          <Text style={style.gotoSignUpBtn}>Sign Up</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -57,33 +74,44 @@ const style = StyleSheet.create({
     height: 130,
   },
   appName: {
-    fontSize: 24,
+    fontSize: 40,
+    fontFamily: "sans-serif-medium",
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 100,
   },
   inputContainer: {
-    width: "100%",
-    marginVertical: 10,
-    borderWidth: 5,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    width: "80%",
+    marginVertical: 30,
   },
-  input: {
-    height: 40,
-  },
+  // textinput: {
+  //   borderWidth: 5,
+
+  //   borderColor: "#ccc",
+  //   borderRadius: 5,
+  //   paddingHorizontal: 10,
+  //   height: 40,
+  // },
   loginButton: {
-    width: "100%",
-    height: 40,
+    width: "50%",
+    height: 60,
     backgroundColor: "#4285F4",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    marginTop: 20,
+    marginBottom: 150,
+    // marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
+  },
+  gotoSignUp: {
+    // flex: 1,
+    flexDirection: "row",
+  },
+  gotoSignUpBtn: {
+    fontWeight: "700",
+    color: "#4285F4",
   },
 });
