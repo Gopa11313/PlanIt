@@ -6,6 +6,7 @@ import WelcomePageScreen from "./screens/onboarding/welcomepages/WelcomePageScre
 import LoginScreen from "./screens/onboarding/login/LoginScreen";
 import SignUpScreen from "./screens/onboarding/SignUp/SignUpScreen";
 import Dashboard from "./screens/dashBoard/Dashboard";
+import EventDetails from "./screens/bottom_Nav/EventDatails";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -34,6 +35,11 @@ export default function App() {
         <Stack.Screen
           name="Dashboard"
           component={Dashboard}
+          options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="EventDetails"
+          component={EventDetails}
           options={{ headerShown: false }}
         ></Stack.Screen>
       </Stack.Navigator>

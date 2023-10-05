@@ -1,9 +1,12 @@
-import React from "react";
-import { View, Text } from "react-native";
-export default function Dashboard() {
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+export default function Dashboard({ navigation, route }) {
+  useEffect(() => {
+    navigation.navigate("EventDetails");
+  }, []);
   return (
-    <View>
+    <SafeAreaView>
       <Text>DashBoard</Text>
-    </View>
+    </SafeAreaView>
   );
 }
