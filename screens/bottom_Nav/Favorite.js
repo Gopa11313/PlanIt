@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, View } from "react-native";
-export default function Chats() {
+export default function Favorite() {
   return (
     <View>
-      <Text>Chats</Text>
+      <Text>Gopal favorite</Text>
     </View>
   );
 }

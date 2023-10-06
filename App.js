@@ -40,7 +40,6 @@ export default function App() {
         <Stack.Screen
           name="EventDetails"
           component={EventDetails}
-          options={{ headerShown: false }}
         ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
