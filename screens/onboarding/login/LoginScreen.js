@@ -10,6 +10,11 @@ import {
 import { TextInput } from "react-native-paper";
 
 export default function LoginScreen({ navigation, rute }) {
+import React from "react";
+import { StyleSheet, Pressable, TextInput, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const Login = ({ navigation }) => {
   const handleLogIn = () => {
     navigation.navigate("Dashboard");
   };
@@ -113,5 +118,7 @@ const style = StyleSheet.create({
   gotoSignUpBtn: {
     fontWeight: "700",
     color: "#4285F4",
-  },
+}
 });
+
+
