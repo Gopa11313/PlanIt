@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Image } from "react-native";
 import {
   StatusBar,
   SafeAreaView,
@@ -8,26 +9,35 @@ import {
   View,
 } from "react-native";
 import { TextInput } from "react-native-paper";
-
-export default function LoginScreen({ navigation, rute }) {
-import React from "react";
-import { StyleSheet, Pressable, TextInput, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const Login = ({ navigation }) => {
-  const handleLogIn = () => {
-    navigation.navigate("Dashboard");
+import Logo from "../../../assets/photos/logo.png";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+export default function Login({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleLogIn = async () => {
+    try {
+      const auth = getAuth(); // Initialize the auth object
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("User logged in successfully!", userCredential.user.uid);
+      navigation.navigate("Dashboard");
+    } catch (error) {
+      alert(error);
+      console.error("Error during login:", error);
+    }
   };
 
   const gotoSignUp = () => {
     navigation.navigate("SignUpScreen");
   };
 
-  useEffect(() => {}, []);
-
   return (
     <SafeAreaView style={style.container}>
-      <View>
+      <View style={style.topView}>
+        <Image source={Logo} style={style.logo} />
         <Text style={style.appName}>PlanIt</Text>
       </View>
 
@@ -36,6 +46,8 @@ const Login = ({ navigation }) => {
           label="Email"
           right={<TextInput.Icon icon="email" />}
           mode="flat"
+          value={email}
+          onChangeText={setEmail}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
           underlineColor="yellow"
@@ -43,9 +55,11 @@ const Login = ({ navigation }) => {
         <TextInput
           label="password"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
           right={<TextInput.Icon icon="eye" />}
           style={{ margin: 10, backgroundColor: "#ededed" }}
-          activeUnderlineColor="#4285F4"
+          activeUnderlineColor="black"
           underlineColor="yellow"
         />
       </View>
@@ -74,41 +88,38 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
+  topView: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
   logo: {
-    width: 300,
-    height: 130,
+    width: 80,
+    height: 80,
+    objectFit: "fill",
   },
   appName: {
     fontSize: 40,
     fontFamily: "sans-serif-medium",
     fontWeight: "bold",
-    marginBottom: 100,
+    marginBottom: 50,
   },
   inputContainer: {
-    width: "80%",
+    width: "90%",
     marginVertical: 30,
   },
-  // textinput: {
-  //   borderWidth: 5,
-
-  //   borderColor: "#ccc",
-  //   borderRadius: 5,
-  //   paddingHorizontal: 10,
-  //   height: 40,
-  // },
   loginButton: {
     width: "50%",
-    height: 60,
-    backgroundColor: "#4285F4",
+    height: 50,
+    backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    marginBottom: 150,
+    marginBottom: 100,
     // marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
   },
   gotoSignUp: {
@@ -118,7 +129,5 @@ const style = StyleSheet.create({
   gotoSignUpBtn: {
     fontWeight: "700",
     color: "#4285F4",
-}
+  },
 });
-
-
