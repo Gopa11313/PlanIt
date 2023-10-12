@@ -11,6 +11,7 @@ import { TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Gurkirat from "../../assets/gurkirat.png";
 import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Settings() {
   return (
@@ -32,7 +33,16 @@ export default function Settings() {
         </View>
 
         <View style={style.subContainers}>
-          <Text style={style.containerHeader}>About Me</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              margin: 3,
+            }}
+          >
+            <Text style={style.containerHeader}>About Me</Text>
+            <MaterialIcons name="edit" size={24} color="black" />
+          </View>
           <Pressable>
             <Text style={style.subContainersContent}>Interest</Text>
             {/* <AntDesign name="arrowright" size={24} color="black" /> */}
