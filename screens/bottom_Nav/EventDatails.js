@@ -6,6 +6,7 @@ import {
   View,
   Image,
   ScrollView,
+  StatusBar,
   FlatList,
 } from "react-native";
 import EventCover from "../../assets/EventCover.jpg";
