@@ -122,7 +122,7 @@ const style = StyleSheet.create({
 
   logoutButton: {
     width: 200,
-    height: 60,
+    height: 50,
     backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
@@ -131,7 +131,7 @@ const style = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
   },
 });
