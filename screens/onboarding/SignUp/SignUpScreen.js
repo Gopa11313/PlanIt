@@ -11,8 +11,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { db } from "../../../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { TextInput } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialIcons";
+
 import Logo from "../../../assets/photos/logo.png";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 const SignUp = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -63,51 +66,75 @@ const SignUp = ({ navigation }) => {
       <View style={style.inputContainer}>
         <TextInput
           label="Name"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="person" size={24} color="black" />}
+            />
+          }
           mode="flat"
           value={name}
           onChangeText={setName}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
           label="Email"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="email" size={24} color="black" />}
+            />
+          }
           mode="flat"
           value={email}
           onChangeText={setEmail}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
           label="Username"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => (
+                <Icon name="account-circle" size={24} color="black" />
+              )}
+            />
+          }
           mode="flat"
           value={userName}
           onChangeText={setUserName}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
-          label="password"
-          secureTextEntry
+          label="Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
           value={password}
           onChangeText={setPassword}
-          right={<TextInput.Icon icon="eye" />}
-          style={{ margin: 10, backgroundColor: "#ededed" }}
+         style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
-          label="Re-password"
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
+          label="Re-Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
       </View>
       <View style={style.signInButton}>

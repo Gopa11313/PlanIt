@@ -8,6 +8,8 @@ import {
   Text,
   View,
 } from "react-native";
+
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { TextInput } from "react-native-paper";
 import Logo from "../../../assets/photos/logo.png";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -44,28 +46,38 @@ export default function Login({ navigation }) {
       <View style={style.inputContainer}>
         <TextInput
           label="Email"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="email" size={24} color="black" />}
+            />
+          }
           mode="flat"
           value={email}
           onChangeText={setEmail}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
-          label="password"
-          secureTextEntry
+          label="Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
+          style={{ margin: 10, backgroundColor: "#ededed" }}
+          activeUnderlineColor="#4285F4"
+          underlineColor="black"
           value={password}
           onChangeText={setPassword}
-          right={<TextInput.Icon icon="eye" />}
-          style={{ margin: 10, backgroundColor: "#ededed" }}
-          activeUnderlineColor="black"
-          underlineColor="yellow"
+       
         />
       </View>
 
       <View style={style.loginButton}>
-        <Pressable onPress={handleLogIn}>
+        <Pressable onPress={Login}>
           <Text style={style.buttonText}>Login</Text>
         </Pressable>
       </View>
@@ -79,6 +91,7 @@ export default function Login({ navigation }) {
     </SafeAreaView>
   );
 }
+
 const style = StyleSheet.create({
   container: {
     flex: 1,
