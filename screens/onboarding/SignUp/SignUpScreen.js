@@ -1,66 +1,144 @@
-import { StatusBar, View, Text, StyleSheet, Pressable } from "react-native";
+import { useState } from "react";
+import {
+  StatusBar,
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { db } from "../../../firebaseConfig";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { TextInput } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialIcons";
+
+import Logo from "../../../assets/photos/logo.png";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const SignUp = ({ navigation }) => {
-  const handleSignUp = () => {
-    navigation.navigate("Dashboard");
-  };
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
 
   const gotoLogin = () => {
     navigation.navigate("LoginScreen");
   };
 
+  const createUser = () => {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        console.log("User account created & signed in!");
+        storeUserData();
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          console.log("That email address is already in use!");
+        }
+
+        if (error.code === "auth/invalid-email") {
+          console.log("That email address is invalid!");
+        }
+
+        console.error(error);
+      });
+  };
+  const storeUserData = async () => {
+    const userDetails = {
+      name: name,
+      email: email,
+      userName: userName,
+    };
+    const insertedDocument = await addDoc(collection(db, "Users"), userDetails);
+    navigation.navigate("Dashboard");
+  };
+  const signUP = () => {
+    createUser();
+  };
   return (
     <SafeAreaView style={style.container}>
-      <View>
+      <View style={style.topView}>
+        <Image source={Logo} style={style.logo} />
         <Text style={style.appName}>PlanIt</Text>
       </View>
       <View style={style.inputContainer}>
         <TextInput
           label="Name"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="person" size={24} color="black" />}
+            />
+          }
           mode="flat"
+          value={name}
+          onChangeText={setName}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
           label="Email"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="email" size={24} color="black" />}
+            />
+          }
           mode="flat"
+          value={email}
+          onChangeText={setEmail}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
           label="Username"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => (
+                <Icon name="account-circle" size={24} color="black" />
+              )}
+            />
+          }
+          mode="flat"
+          value={userName}
+          onChangeText={setUserName}
+          style={{ margin: 10, backgroundColor: "#ededed" }}
+          activeUnderlineColor="#4285F4"
+          underlineColor="black"
+        />
+        <TextInput
+          label="Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
+          value={password}
+          onChangeText={setPassword}
+         style={{ margin: 10, backgroundColor: "#ededed" }}
+          activeUnderlineColor="#4285F4"
+          underlineColor="black"
+        />
+        <TextInput
+          label="Re-Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
           mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
-        />
-        <TextInput
-          label="password"
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
-          style={{ margin: 10, backgroundColor: "#ededed" }}
-          activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
-        />
-        <TextInput
-          label="Re-password"
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
-          style={{ margin: 10, backgroundColor: "#ededed" }}
-          activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
       </View>
       <View style={style.signInButton}>
-        <Pressable onPress={handleSignUp}>
+        <Pressable onPress={createUser}>
           <Text style={style.buttonText}>Sign Up</Text>
         </Pressable>
       </View>
@@ -84,41 +162,40 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
+  topView: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
   logo: {
-    width: 300,
-    height: 130,
+    width: 80,
+    height: 80,
+    objectFit: "fill",
   },
   appName: {
     fontSize: 40,
     fontFamily: "sans-serif-medium",
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   inputContainer: {
-    width: "80%",
+    width: "90%",
     marginVertical: 30,
   },
-  // textinput: {
-  //   borderWidth: 5,
 
-  //   borderColor: "#ccc",
-  //   borderRadius: 5,
-  //   paddingHorizontal: 10,
-  //   height: 40,
-  // },
   signInButton: {
     width: "50%",
-    height: 60,
-    backgroundColor: "#4285F4",
+    height: 50,
+    backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    marginBottom: 100,
+    marginBottom: 50,
+    // marginTop: 20,
     // marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
   },
   gotoLogin: {
