@@ -45,7 +45,7 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
+// gopal
 const styles = StyleSheet.create({
   container: {
     flex: 1,
