@@ -1,22 +1,16 @@
 import { useEffect } from "react";
-import {
-  StatusBar,
-  SafeAreaView,
-  StyleSheet,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+import { StatusBar, StyleSheet, Pressable, Text, View } from "react-native";
 import { TextInput } from "react-native-paper";
-
-export default function LoginScreen({ navigation, rute }) {
 import React from "react";
-import { StyleSheet, Pressable, TextInput, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Login = ({ navigation }) => {
-  const handleLogIn = () => {
-    navigation.navigate("Dashboard");
+import Icon from "react-native-vector-icons/MaterialIcons";
+
+export default function LoginScreen({ navigation, route }) {
+  const Login = ({ navigation }) => {
+    const handleLogIn = () => {
+      navigation.navigate("Dashboard");
+    };
   };
 
   const gotoSignUp = () => {
@@ -34,24 +28,33 @@ const Login = ({ navigation }) => {
       <View style={style.inputContainer}>
         <TextInput
           label="Email"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="email" size={24} color="black" />}
+            />
+          }
           mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
-          label="password"
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
+          label="Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
       </View>
 
       <View style={style.loginButton}>
-        <Pressable onPress={handleLogIn}>
+        <Pressable onPress={Login}>
           <Text style={style.buttonText}>Login</Text>
         </Pressable>
       </View>
@@ -65,6 +68,7 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   );
 }
+
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -99,7 +103,7 @@ const style = StyleSheet.create({
   loginButton: {
     width: "50%",
     height: 60,
-    backgroundColor: "#4285F4",
+    backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
@@ -118,7 +122,5 @@ const style = StyleSheet.create({
   gotoSignUpBtn: {
     fontWeight: "700",
     color: "#4285F4",
-}
+  },
 });
-
-

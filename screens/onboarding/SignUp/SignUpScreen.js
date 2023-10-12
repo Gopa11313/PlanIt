@@ -2,6 +2,7 @@ import { StatusBar, View, Text, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { TextInput } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const SignUp = ({ navigation }) => {
   const handleSignUp = () => {
@@ -20,43 +21,67 @@ const SignUp = ({ navigation }) => {
       <View style={style.inputContainer}>
         <TextInput
           label="Name"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="person" size={24} color="black" />}
+            />
+          }
           mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
           label="Email"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="email" size={24} color="black" />}
+            />
+          }
           mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
           label="Username"
-          right={<TextInput.Icon icon="email" />}
+          right={
+            <TextInput.Icon
+              icon={() => (
+                <Icon name="account-circle" size={24} color="black" />
+              )}
+            />
+          }
           mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
-          label="password"
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
+          label="Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
         <TextInput
-          label="Re-password"
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
+          label="Re-Password"
+          right={
+            <TextInput.Icon
+              icon={() => <Icon name="lock" size={24} color="black" />}
+            />
+          }
+          secureTextEntry={true}
+          mode="flat"
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
-          underlineColor="yellow"
+          underlineColor="black"
         />
       </View>
       <View style={style.signInButton}>
@@ -109,7 +134,7 @@ const style = StyleSheet.create({
   signInButton: {
     width: "50%",
     height: 60,
-    backgroundColor: "#4285F4",
+    backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
