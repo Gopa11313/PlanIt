@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,12 +9,53 @@ import {
 } from "react-native";
 import Location from "../../assets/location.png";
 import MainSection from "../../assets/mainSection.png";
-
+import { db } from "../../firebaseConfig";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import Gurkirat from "../../assets/gurkirat.png";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import GestureRecognizer, {
+  swipeDirections,
+} from "react-native-swipe-gestures";
+
 export default function Home() {
+  useEffect(() => {
+    getAllUserData();
+  }, []);
+  const onSwipeLeft = () => {
+    console.log("Swipe left");
+    getAllUserData();
+  };
+  const onSwipeRight = () => {
+    console.log("Swipe right");
+  };
+
+  async function getAllUserData() {
+    try {
+      const usersCollection = collection(db, "Users"); // Update the collection path to 'users'
+      const querySnapshot = await getDocs(usersCollection); // Update the collection path to "users"
+      const userData = [];
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        const user = {
+          id: doc.id,
+          ...doc.data(),
+        };
+        userData.push(user);
+      });
+      console.log("user data: " + userData);
+    } catch (error) {
+      console.error("Error retrieving user data:", error);
+      throw error;
+    }
+  }
+
   return (
-    <SafeAreaView style={styles.continer}>
-      <View style={styles.insideView}>
+    <GestureRecognizer
+      onSwipeLeft={onSwipeLeft}
+      onSwipeRight={onSwipeRight}
+      style={styles.continer}
+    >
+      <SafeAreaView style={styles.insideView}>
         <View style={styles.locationCase}>
           <Image style={styles.locationImage} source={Location} />
           <Text style={styles.location}>Sherwood Park, Toronto, ON</Text>
@@ -31,8 +72,8 @@ export default function Home() {
             </View>
           </ImageBackground>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureRecognizer>
   );
 }
 const styles = StyleSheet.create({

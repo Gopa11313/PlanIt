@@ -119,7 +119,7 @@ const SignUp = ({ navigation }) => {
           mode="flat"
           value={password}
           onChangeText={setPassword}
-         style={{ margin: 10, backgroundColor: "#ededed" }}
+          style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
           underlineColor="black"
         />

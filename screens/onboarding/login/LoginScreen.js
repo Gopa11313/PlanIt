@@ -72,12 +72,11 @@ export default function Login({ navigation }) {
           underlineColor="black"
           value={password}
           onChangeText={setPassword}
-       
         />
       </View>
 
       <View style={style.loginButton}>
-        <Pressable onPress={Login}>
+        <Pressable onPress={handleLogIn}>
           <Text style={style.buttonText}>Login</Text>
         </Pressable>
       </View>
