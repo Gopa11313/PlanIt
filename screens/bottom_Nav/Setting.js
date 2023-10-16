@@ -6,64 +6,72 @@ import {
   Pressable,
   Text,
   View,
+  ScrollView,
 } from "react-native";
-import { TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Gurkirat from "../../assets/gurkirat.png";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export default function Settings() {
+import { getAuth } from "firebase/auth";
+
+export default function Settings({ navigation }) {
+  const handleLogout = async () => {
+    const auth = getAuth();
+    auth.signOut().then(() => {
+      alert("User Logged out");
+      navigation.navigate("LoginScreen");
+      console.log("User signed out!");
+    });
+  };
+
   return (
     <SafeAreaView style={style.container}>
-      <View style={style.insideView}>
-        <View>
+      <ScrollView contentContainerStyle={style.scrollViewContent}>
+        <View style={style.insideView}>
           <Text style={style.profileName}>Profile</Text>
-        </View>
 
-        <View>
           <Image style={style.dp} source={Gurkirat} />
-        </View>
 
-        <View style={style.subContainers}>
-          <Text style={style.containerHeader}>General</Text>
-          <Text style={style.subContainersContent}>Gurkirat Jaitla</Text>
-          <Text style={style.subContainersContent}>gurkirat@gmail.com</Text>
-          <Text style={style.subContainersContent}>647-897-xxxx</Text>
-        </View>
-
-        <View style={style.subContainers}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              margin: 3,
-            }}
-          >
-            <Text style={style.containerHeader}>About Me</Text>
-            <MaterialIcons name="edit" size={24} color="black" />
+          <View style={style.subContainers}>
+            <Text style={style.containerHeader}>General</Text>
+            <Text style={style.subContainersContent}>Gurkirat Jaitla</Text>
+            <Text style={style.subContainersContent}>gurkirat@gmail.com</Text>
+            <Text style={style.subContainersContent}>647-897-xxxx</Text>
           </View>
-          <Pressable>
-            <Text style={style.subContainersContent}>Interest</Text>
-            {/* <AntDesign name="arrowright" size={24} color="black" /> */}
-          </Pressable>
-          <Pressable>
-            <Text style={style.subContainersContent}>Age</Text>
-          </Pressable>
-          <Pressable>
-            <Text style={style.subContainersContent}>Location</Text>
-          </Pressable>
-          <Pressable>
-            <Text style={style.subContainersContent}>Gender</Text>
-          </Pressable>
-        </View>
 
-        <View>
-          <Pressable style={style.logoutButton}>
-            <Text style={style.buttonText}>Logout</Text>
-          </Pressable>
+          <View style={style.subContainers}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 3,
+              }}
+            >
+              <Text style={style.containerHeader}>About Me</Text>
+              <MaterialIcons name="edit" size={24} color="black" />
+            </View>
+            <Pressable>
+              <Text style={style.subContainersContent}>Interest</Text>
+            </Pressable>
+            <Pressable>
+              <Text style={style.subContainersContent}>Age</Text>
+            </Pressable>
+            <Pressable>
+              <Text style={style.subContainersContent}>Location</Text>
+            </Pressable>
+            <Pressable>
+              <Text style={style.subContainersContent}>Gender</Text>
+            </Pressable>
+          </View>
+
+          <View>
+            <Pressable style={style.logoutButton} onPress={handleLogout}>
+              <Text style={style.buttonText}>Logout</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -73,6 +81,9 @@ const style = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     backgroundColor: "#fff",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   insideView: {
     alignItems: "center",
@@ -86,7 +97,6 @@ const style = StyleSheet.create({
     marginStart: 25,
     color: "black",
   },
-
   dp: {
     width: 150,
     height: 150,
@@ -111,15 +121,14 @@ const style = StyleSheet.create({
     width: "85%",
     marginBottom: 30,
     borderRadius: 20,
-    backgroundColor: "white", // Set a background color
-    elevation: 4, // Add a soft shadow
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 2, height: 4 }, // Shadow offset
-    shadowOpacity: 1, // Shadow opacity
-    shadowRadius: 4, // Shadow radius
+    backgroundColor: "white",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 4,
     borderWidth: 1,
   },
-
   logoutButton: {
     width: 200,
     height: 50,
@@ -127,7 +136,7 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    // marginTop: 20,
+    marginBottom: 20,
   },
   buttonText: {
     color: "#fff",

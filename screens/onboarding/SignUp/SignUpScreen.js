@@ -20,43 +20,67 @@ const SignUp = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
   const [userName, setUserName] = useState("");
+  const [errors, setErrors] = useState({});
 
   const gotoLogin = () => {
     navigation.navigate("LoginScreen");
   };
 
-  const createUser = () => {
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        console.log("User account created & signed in!");
-        storeUserData();
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
-        }
+  const validateInputs = () => {
+    const errors = {};
 
-        if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
-        }
+    if (!name) {
+      errors.name = "Name is required";
+    }
 
-        console.error(error);
-      });
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email format";
+    }
+
+    if (!userName) {
+      errors.userName = "Username is required";
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+    } else if (password !== rePassword) {
+      errors.rePassword = "Passwords do not match";
+    }
+
+    setErrors(errors);
+
+    return Object.keys(errors).length === 0;
   };
+
+  const isValidEmail = (email) => {
+    return email.includes("@"); // Implement more robust email validation if needed
+  };
+
+  const createUser = () => {
+    if (validateInputs()) {
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          console.log("User account created & signed in!");
+          storeUserData();
+        })
+        .catch((error) => {
+          console.error("Sign up failed:", error);
+        });
+    }
+  };
+
   const storeUserData = async () => {
-    const userDetails = {
-      name: name,
-      email: email,
-      userName: userName,
-    };
-    const insertedDocument = await addDoc(collection(db, "Users"), userDetails);
+    // Store user data in the database
+    // ...
+
     navigation.navigate("Dashboard");
   };
-  const signUP = () => {
-    createUser();
-  };
+
   return (
     <SafeAreaView style={style.container}>
       <View style={style.topView}>
@@ -78,6 +102,7 @@ const SignUp = ({ navigation }) => {
           activeUnderlineColor="#4285F4"
           underlineColor="black"
         />
+        {errors.name && <Text style={style.errorText}>{errors.name}</Text>}
         <TextInput
           label="Email"
           right={
@@ -92,6 +117,7 @@ const SignUp = ({ navigation }) => {
           activeUnderlineColor="#4285F4"
           underlineColor="black"
         />
+        {errors.email && <Text style={style.errorText}>{errors.email}</Text>}
         <TextInput
           label="Username"
           right={
@@ -108,6 +134,9 @@ const SignUp = ({ navigation }) => {
           activeUnderlineColor="#4285F4"
           underlineColor="black"
         />
+        {errors.userName && (
+          <Text style={style.errorText}>{errors.userName}</Text>
+        )}
         <TextInput
           label="Password"
           right={
@@ -119,10 +148,13 @@ const SignUp = ({ navigation }) => {
           mode="flat"
           value={password}
           onChangeText={setPassword}
-         style={{ margin: 10, backgroundColor: "#ededed" }}
+          style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
           underlineColor="black"
         />
+        {errors.password && (
+          <Text style={style.errorText}>{errors.password}</Text>
+        )}
         <TextInput
           label="Re-Password"
           right={
@@ -132,10 +164,15 @@ const SignUp = ({ navigation }) => {
           }
           secureTextEntry={true}
           mode="flat"
+          value={rePassword}
+          onChangeText={setRePassword}
           style={{ margin: 10, backgroundColor: "#ededed" }}
           activeUnderlineColor="#4285F4"
           underlineColor="black"
         />
+        {errors.rePassword && (
+          <Text style={style.errorText}>{errors.rePassword}</Text>
+        )}
       </View>
       <View style={style.signInButton}>
         <Pressable onPress={createUser}>
@@ -179,9 +216,12 @@ const style = StyleSheet.create({
   },
   inputContainer: {
     width: "90%",
-    marginVertical: 30,
+    marginVertical: 20, // Reduced margin to fit smaller screens
   },
-
+  input: {
+    margin: 10,
+    backgroundColor: "#ededed",
+  },
   signInButton: {
     width: "50%",
     height: 50,
@@ -189,9 +229,7 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    marginBottom: 50,
-    // marginTop: 20,
-    // marginTop: 20,
+    marginBottom: 30, // Reduced margin to fit smaller screens
   },
   buttonText: {
     color: "#fff",
@@ -199,12 +237,16 @@ const style = StyleSheet.create({
     fontWeight: "bold",
   },
   gotoLogin: {
-    // flex: 1,
     flexDirection: "row",
   },
   gotoLoginBtn: {
     fontWeight: "700",
     color: "#4285F4",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginLeft: 10,
   },
 });
 
