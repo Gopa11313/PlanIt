@@ -44,6 +44,7 @@ export default function Login({ navigation }) {
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
         await AsyncStorage.setItem("userDocId", JSON.stringify(userDoc.id));
+        await AsyncStorage.setItem("email", email);
         return;
       } else {
         console.log("No user found with this email");
