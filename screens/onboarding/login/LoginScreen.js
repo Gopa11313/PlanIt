@@ -12,7 +12,10 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { TextInput } from "react-native-paper";
 import Logo from "../../../assets/photos/logo.png";
+import { db } from "../../../firebaseConfig";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,13 +28,32 @@ export default function Login({ navigation }) {
         password
       );
       console.log("User logged in successfully!", userCredential.user.uid);
+      getUserDocIdByEmail(email);
       navigation.navigate("Dashboard");
     } catch (error) {
       alert(error);
       console.error("Error during login:", error);
     }
   };
+  const getUserDocIdByEmail = async (email) => {
+    try {
+      const usersCollection = collection(db, "Users"); // Replace with the name of your collection
+      const userQuery = query(usersCollection, where("email", "==", email));
+      const querySnapshot = await getDocs(userQuery);
 
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        await AsyncStorage.setItem("userDocId", JSON.stringify(userDoc.id));
+        return;
+      } else {
+        console.log("No user found with this email");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error retrieving user document ID:", error);
+      return null;
+    }
+  };
   const gotoSignUp = () => {
     navigation.navigate("SignUpScreen");
   };

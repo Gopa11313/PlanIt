@@ -10,6 +10,7 @@ import {
 import Logo from "../../assets/photos/logo.png";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { db } from "../../firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function SplashScreen({ navigation, route }) {
   const auth = getAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -21,23 +22,13 @@ export default function SplashScreen({ navigation, route }) {
       useNativeDriver: true,
     }).start();
   };
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user) {
-          // User is signed in, navigate to the Dashboard or main screen
-          navigation.navigate("Dashboard");
-        } else {
-          // User is not signed in, navigate to the Welcome or Login screen
-          navigation.navigate("WelcomePage");
-        }
-      });
-
-      // Clean up the listener when the component unmounts
-      return () => unsubscribe();
-    }, 2000);
-
-    return () => clearTimeout(timer);
+  useEffect(async () => {
+    const value = await AsyncStorage.getItem("userDocId");
+    if (value != null) {
+      navigation.navigate("Dashboard");
+    } else {
+      navigation.navigate("WelcomePage");
+    }
   }, []);
   return (
     <SafeAreaView style={style.contianer}>
