@@ -20,7 +20,7 @@ import GestureRecognizer, {
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Home() {
+export default function Home({ navigation, route }) {
   const [userData, setUserData] = useState([]);
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
@@ -42,6 +42,7 @@ export default function Home() {
     setImage(userData[counter].Image[0]);
     setLocation(userData[counter].address);
     setBio(userData[counter].Bio);
+    setName(userData[counter].name);
     setAge(userData[counter].Age);
     setCounter(counter + 1);
   };
@@ -73,14 +74,18 @@ export default function Home() {
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
-    if (isModalVisible == false) {
+    if (isModalVisible == true) {
       setData();
     }
     // console.log(selectedMarker);
   };
   const gotoDeatial = () => {
     toggleModal();
-    // navigation.navigate("EventDetails", { selectedMarker });
+    console.log("HERE");
+    console.log(userData[counter]);
+    navigation.navigate("HomeProfileDetais", {
+      userData: userData[counter - 1],
+    });
   };
   return (
     <GestureRecognizer
