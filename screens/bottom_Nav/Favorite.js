@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 
-import { FlatList, Image } from "react-native";
-import { Text, View, StyleSheet, StatusBar } from "react-native";
+import {
+  FlatList,
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  StatusBar,
+  Pressable,
+  Swipeable,
+} from "react-native";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; // Import your Firebase configuration
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Pressable } from "react-native";
 export default function Favorite({ navigation, route }) {
   const [favoriteData, setFavoriteData] = useState([]);
   const renderItem = ({ item }) => {
@@ -20,17 +27,17 @@ export default function Favorite({ navigation, route }) {
         <View style={style.renderItem}>
           <View style={style.firstView}>
             <Text style={{ fontWeight: "600", fontSize: 16 }}>
-              Name:{item.name}
+              Name: {item.name}
             </Text>
             <Text style={{ marginTop: 5 }}>Address: {item.address}</Text>
             <Text style={{ marginTop: 2, fontSize: 13 }}>
-              Description:{item.description}
+              Description: {item.description}
             </Text>
           </View>
           <View style={style.secondView}>
             <Image
               style={{ height: "100%", width: "100%", borderRadius: 10 }}
-              source={{ url: item.image }}
+              source={{ uri: item.image }}
             />
           </View>
         </View>
@@ -38,12 +45,14 @@ export default function Favorite({ navigation, route }) {
     );
   };
   const handleOnClick = (selectedMarker) => {
-    console.log("pressed");
     navigation.navigate("EventDetails", { selectedMarker, fromExplore: false });
   };
   useEffect(() => {
     getAllFavorite();
   }, []);
+  const handleDeleteItem = (item) => {
+    console.log("Delete");
+  };
   const getAllFavorite = async () => {
     const userDocId = await AsyncStorage.getItem("userDocId");
     const favoritesCollection = collection(db, "Favorite"); // Update to your collection name
@@ -108,6 +117,18 @@ const style = StyleSheet.create({
   },
   secondView: {
     width: "40%",
+    height: "100%",
+  },
+  itemContainer: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 75,
     height: "100%",
   },
 });
