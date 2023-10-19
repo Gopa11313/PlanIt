@@ -13,22 +13,45 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { TextInput } from "react-native-paper";
 import Logo from "../../../assets/photos/logo.png";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const validateForm = () => {
+    // Simple email validation
+    if (!email || !email.includes("@")) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    // Password length validation
+    if (!password || password.length < 8) {
+      setError("Password must be at least 6 characters");
+      return false;
+    }
+
+    // Clear any previous errors
+    setError("");
+    return true;
+  };
+
   const handleLogIn = async () => {
-    try {
-      const auth = getAuth(); // Initialize the auth object
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log("User logged in successfully!", userCredential.user.uid);
-      navigation.navigate("Dashboard");
-    } catch (error) {
-      alert(error);
-      console.error("Error during login:", error);
+    if (validateForm()) {
+      try {
+        const auth = getAuth(); // Initialize the auth object
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        console.log("User logged in successfully!", userCredential.user.uid);
+        navigation.navigate("Dashboard");
+      } catch (error) {
+        alert(error);
+        console.error("Error during login:", error);
+      }
     }
   };
 
@@ -72,12 +95,13 @@ export default function Login({ navigation }) {
           underlineColor="black"
           value={password}
           onChangeText={setPassword}
-       
         />
       </View>
 
+      {error && <Text style={style.errorText}>{error}</Text>}
+
       <View style={style.loginButton}>
-        <Pressable onPress={Login}>
+        <Pressable onPress={handleLogIn}>
           <Text style={style.buttonText}>Login</Text>
         </Pressable>
       </View>
@@ -142,5 +166,9 @@ const style = StyleSheet.create({
   gotoSignUpBtn: {
     fontWeight: "700",
     color: "#4285F4",
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
   },
 });

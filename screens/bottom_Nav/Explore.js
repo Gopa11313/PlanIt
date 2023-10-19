@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TextInput, SafeAreaView } from "react-native";
 import MapView, { Callout, Marker } from "react-native-maps";
+import * as Location from "expo-location"; // Import Location from expo
+
 export default function Explore({ navigation, route }) {
   const [searchText, setSearchText] = useState("");
   const markerCoordinate = {
@@ -8,13 +10,45 @@ export default function Explore({ navigation, route }) {
     longitude: -122.4324,
   };
 
+  // Function to get user location
+  const getCurrentLocation = async () => {
+    try {
+      // 1. Request permissions
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert(`Permission to access location was denied`);
+        return;
+      }
+
+      // 2. Get the location
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      console.log(
+        "User location:",
+        location.coords.latitude,
+        location.coords.longitude
+      );
+      console.log(location);
+      alert(JSON.stringify(location));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getCurrentLocation(); // Call the function
+  }, []);
+
   // Function to handle marker press
   const handleMarkerPress = (event) => {
     console.log("pressed");
     navigation.navigate("EventDetails");
   };
+
   return (
-    <SafeAreaView style={style.continer}>
+    <SafeAreaView style={style.container}>
       <MapView
         style={style.mapView}
         initialRegion={{
@@ -27,7 +61,7 @@ export default function Explore({ navigation, route }) {
         {markerCoordinate && (
           <Marker
             coordinate={markerCoordinate}
-            title="San Francsico"
+            title="San Francisco"
             description="Meet & dance"
             onCalloutPress={() => {
               handleMarkerPress();
@@ -44,8 +78,9 @@ export default function Explore({ navigation, route }) {
     </SafeAreaView>
   );
 }
+
 const style = StyleSheet.create({
-  continer: {
+  container: {
     flex: 1,
   },
   mapView: {
