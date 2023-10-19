@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,66 +6,40 @@ import {
   View,
   Image,
   ScrollView,
-  StatusBar,
-  FlatList,
+  ImageBackground,
   Pressable,
+  FlatList,
 } from "react-native";
-import EventCover from "../../assets/EventCover.jpg";
-import SecondImage from "../../assets/secondImage.jpg";
 import Calender from "../../assets/calender.png";
 import Ticket from "../../assets/ticket.png";
 import Dress from "../../assets/dress.png";
 import Location from "../../assets/location.png";
-import { db } from "../../firebaseConfig";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import { Toast } from "react-native-toast-message";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function EventDetails({ route }) {
-  const { selectedMarker, fromExplore } = route.params;
+export default function HomeProfileDetais({ route }) {
+  const { userData } = route.params;
   const data = [
-    { id: "1", text: "23rd Sep", image: Calender },
-    { id: "2", text: "Ticket", image: Ticket },
-    { id: "3", text: "Dress", image: Dress },
+    { id: "1", text: "Age", age: userData.Age },
+    { id: "2", text: "Alcohal", age: "No" },
+    { id: "3", text: "Smoking", age: "No" },
   ];
   const renderItem = ({ item }) => (
     <View style={style.renderItem}>
-      <Image style={style.renderImage} source={item.image} />
-      <Text>{item.text}</Text>
+      <Text>{item.text}:</Text>
+      <Text>{item.age}</Text>
       <View style={style.renderEndView} />
     </View>
   );
-  const showToast = () => {
-    Toast.show({
-      type: "success",
-      position: "bottom",
-      text1: "Success",
-      text2: "Button clicked!",
-    });
-  };
-  const createFavorite = async () => {
-    const value = await AsyncStorage.getItem("userDocId");
-    const favDetails = {
-      userDocId: value,
-      ...selectedMarker,
-    };
-    const insertedDocument = await addDoc(
-      collection(db, "Favorite"),
-      favDetails
-    );
-    showToast();
-  };
   return (
     <SafeAreaView style={style.contianer}>
       <ScrollView style={style.scrollView}>
         <View style={style.insideView}>
-          <Image style={style.image} source={{ url: selectedMarker.image }} />
+          <Image style={style.image} source={{ url: userData.Image[0] }} />
           <View style={style.secondView}>
-            <Text style={style.category}>Toronto Sunday Events</Text>
+            <Text style={style.category}>Quote</Text>
             <View style={style.categoryName}>
-              <Text style={style.title}>{selectedMarker.name}</Text>
+              <Text style={style.title}>{userData.Quote}</Text>
             </View>
           </View>
-          <Image style={style.image} source={{ url: selectedMarker.image2 }} />
+          <Image style={style.image} source={{ url: userData.Image[1] }} />
 
           <View style={style.thirdView}>
             <FlatList
@@ -83,18 +57,14 @@ export default function EventDetails({ route }) {
             />
             <View style={style.locationCase}>
               <Image style={style.locationImage} source={Location} />
-              <Text style={style.location}>{selectedMarker.address}</Text>
+              <Text style={style.location}>{userData.Address}</Text>
             </View>
           </View>
           <View style={style.thirdView}>
-            <Text style={style.description}> {selectedMarker.description}</Text>
-            {fromExplore && (
-              <Pressable style={style.bookmarkBtn} onPress={createFavorite}>
-                <Text style={{ color: "white", fontSize: 15 }}>
-                  Make it favorite
-                </Text>
-              </Pressable>
-            )}
+            <Text style={style.description}> {userData.Bio}</Text>
+            <Pressable style={style.bookmarkBtn}>
+              <Text style={{ color: "white", fontSize: 15 }}>Match</Text>
+            </Pressable>
           </View>
         </View>
       </ScrollView>
@@ -120,7 +90,7 @@ const style = StyleSheet.create({
   image: {
     width: "100%",
     marginTop: 15,
-    height: 250,
+    height: 350,
     borderRadius: 10,
   },
   secondView: {
@@ -158,7 +128,7 @@ const style = StyleSheet.create({
   renderImage: {
     width: 18,
     height: 18,
-    margin: 10,
+    margin: 5,
   },
 
   renderEndView: {
