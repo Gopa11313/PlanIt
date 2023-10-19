@@ -15,7 +15,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import Logo from "../../../assets/photos/logo.png";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const SignUp = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -75,9 +75,17 @@ const SignUp = ({ navigation }) => {
   };
 
   const storeUserData = async () => {
-    // Store user data in the database
-    // ...
-
+    const userDetails = {
+      name: name,
+      email: email,
+      userName: userName,
+    };
+    const insertedDocument = await addDoc(collection(db, "Users"), userDetails);
+    console.log("docID: " + insertedDocument.id);
+    await AsyncStorage.setItem(
+      "userDocId",
+      JSON.stringify(insertedDocument.id)
+    );
     navigation.navigate("Dashboard");
   };
 
