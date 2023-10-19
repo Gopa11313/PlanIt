@@ -21,7 +21,7 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { Toast } from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function EventDetails({ route }) {
-  const { selectedMarker } = route.params;
+  const { selectedMarker, fromExplore } = route.params;
   const data = [
     { id: "1", text: "23rd Sep", image: Calender },
     { id: "2", text: "Ticket", image: Ticket },
@@ -88,11 +88,13 @@ export default function EventDetails({ route }) {
           </View>
           <View style={style.thirdView}>
             <Text style={style.description}> {selectedMarker.description}</Text>
-            <Pressable style={style.bookmarkBtn} onPress={createFavorite}>
-              <Text style={{ color: "white", fontSize: 15 }}>
-                Make it favorite
-              </Text>
-            </Pressable>
+            {fromExplore && (
+              <Pressable style={style.bookmarkBtn} onPress={createFavorite}>
+                <Text style={{ color: "white", fontSize: 15 }}>
+                  Make it favorite
+                </Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </ScrollView>

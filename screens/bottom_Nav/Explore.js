@@ -34,7 +34,7 @@ export default function Explore({ navigation, route }) {
   };
   const gotoDeatial = () => {
     toggleModal();
-    navigation.navigate("EventDetails", { selectedMarker });
+    navigation.navigate("EventDetails", { selectedMarker, fromExplore: true });
   };
   async function getAllEventsData() {
     try {
