@@ -34,9 +34,9 @@ export default function HomeProfileDetais({ route }) {
         <View style={style.insideView}>
           <Image style={style.image} source={{ url: userData.Image[0] }} />
           <View style={style.secondView}>
-            <Text style={style.category}>Toronto Sunday Events</Text>
+            <Text style={style.category}>Quote</Text>
             <View style={style.categoryName}>
-              <Text style={style.title}>{userData.name}</Text>
+              <Text style={style.title}>{userData.Quote}</Text>
             </View>
           </View>
           <Image style={style.image} source={{ url: userData.Image[1] }} />
@@ -57,7 +57,7 @@ export default function HomeProfileDetais({ route }) {
             />
             <View style={style.locationCase}>
               <Image style={style.locationImage} source={Location} />
-              <Text style={style.location}>{userData.address}</Text>
+              <Text style={style.location}>{userData.Address}</Text>
             </View>
           </View>
           <View style={style.thirdView}>

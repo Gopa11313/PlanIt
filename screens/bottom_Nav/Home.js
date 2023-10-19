@@ -40,7 +40,7 @@ export default function Home({ navigation, route }) {
   };
   const setData = () => {
     setImage(userData[counter].Image[0]);
-    setLocation(userData[counter].address);
+    setLocation(userData[counter].Address);
     setBio(userData[counter].Bio);
     setName(userData[counter].name);
     setAge(userData[counter].Age);
