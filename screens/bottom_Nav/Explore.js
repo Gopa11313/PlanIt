@@ -7,27 +7,29 @@ import {
   SafeAreaView,
   Button,
   Image,
+  Pressable,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import Modal from "react-native-modal";
 import EventCover from "../../assets/EventCover.jpg";
-import Location from "../../assets/location.png";
+import LocationPhoto from "../../assets/location.png";
 import { db } from "../../firebaseConfig";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import { Pressable } from "react-native";
+
+import * as Location from "expo-location"; // Import Location from expo
+
 export default function Explore({ navigation, route }) {
   useEffect(() => {
     getAllEventsData();
+    getCurrentLocation();
   }, []);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [events, setEvents] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const markerCoordinate = {
-    latitude: 37.78825,
-    longitude: -122.4324,
-  };
+  const [latitude, setLatitude] = useState(37.78825);
+  const [longitude, setLongitude] = useState(37.78825);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
     console.log(selectedMarker);
@@ -56,13 +58,40 @@ export default function Explore({ navigation, route }) {
       throw error;
     }
   }
+  const getCurrentLocation = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert(`Permission to access location was denied`);
+        return;
+      }
+
+      // 2. Get the location
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      console.log(
+        "User location:",
+        location.coords.latitude,
+        location.coords.longitude
+      );
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+      console.log(location);
+      alert(JSON.stringify(location));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <MapView
         style={styles.mapView}
         initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
+          latitude: latitude,
+          longitude: longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -109,7 +138,7 @@ export default function Explore({ navigation, route }) {
               </Text>
             </View>
             <View style={styles.thirdModalView}>
-              <Image source={Location} />
+              <Image source={LocationPhoto} />
               <Text style={{ marginStart: 10 }}>{selectedMarker.location}</Text>
             </View>
             <View style={styles.thirdModalView}>

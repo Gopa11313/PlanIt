@@ -16,9 +16,30 @@ import { db } from "../../../firebaseConfig";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const validateForm = () => {
+    // Simple email validation
+    if (!email || !email.includes("@")) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    // Password length validation
+    if (!password || password.length < 8) {
+      setError("Password must be at least 6 characters");
+      return false;
+    }
+
+    // Clear any previous errors
+    setError("");
+    return true;
+  };
+
   const handleLogIn = async () => {
     try {
       const auth = getAuth(); // Initialize the auth object
@@ -98,6 +119,8 @@ export default function Login({ navigation }) {
         />
       </View>
 
+      {error && <Text style={style.errorText}>{error}</Text>}
+
       <View style={style.loginButton}>
         <Pressable onPress={handleLogIn}>
           <Text style={style.buttonText}>Login</Text>
@@ -164,5 +187,9 @@ const style = StyleSheet.create({
   gotoSignUpBtn: {
     fontWeight: "700",
     color: "#4285F4",
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
   },
 });
