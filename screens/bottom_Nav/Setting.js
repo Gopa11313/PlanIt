@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Gurkirat from "../../assets/gurkirat.png";
-import { AntDesign } from "@expo/vector-icons";
+import pormotionBanner from "../../assets/secondImage.jpg";
+import { AntDesign, Ionicons, FontAwesome, Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { getAuth } from "firebase/auth";
@@ -27,42 +28,54 @@ export default function Settings({ navigation }) {
 
   return (
     <SafeAreaView style={style.container}>
-      <ScrollView contentContainerStyle={style.scrollViewContent}>
+      <ScrollView style={style.scrollViewContent}>
         <View style={style.insideView}>
-          <Text style={style.profileName}>Profile</Text>
-
-          <Image style={style.dp} source={Gurkirat} />
-
-          <View style={style.subContainers}>
-            <Text style={style.containerHeader}>General</Text>
-            <Text style={style.subContainersContent}>Gurkirat Jaitla</Text>
-            <Text style={style.subContainersContent}>gurkirat@gmail.com</Text>
-            <Text style={style.subContainersContent}>647-897-xxxx</Text>
+          <View style={style.topView}>
+            <Image style={style.profilImage} source={Gurkirat} />
+            <View style={style.profilNameView}>
+              <Text style={style.profileName}>Gurkirat</Text>
+              <Text style={{ marginStart: 5, fontSize: 12 }}>
+                PlanIt Member
+              </Text>
+            </View>
+            <View style={style.iconView}>
+              <AntDesign name="edit" size={24} color="black" />
+              <Ionicons name="options" size={24} color="black" />
+              <AntDesign name="setting" size={24} color="black" />
+            </View>
           </View>
 
           <View style={style.subContainers}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                margin: 3,
-              }}
-            >
-              <Text style={style.containerHeader}>About Me</Text>
-              <MaterialIcons name="edit" size={24} color="black" />
+            <Image source={pormotionBanner} style={style.pormotionBanner} />
+          </View>
+          <View style={style.options}>
+            <AntDesign name="infocirlce" size={30} color="green" />
+            <View style={style.optionsInside}>
+              <Text style={style.optionsTitle}>Connections</Text>
+              <Text style={style.optionsDes}>
+                Get connected to people and make friends
+              </Text>
             </View>
-            <Pressable>
-              <Text style={style.subContainersContent}>Interest</Text>
-            </Pressable>
-            <Pressable>
-              <Text style={style.subContainersContent}>Age</Text>
-            </Pressable>
-            <Pressable>
-              <Text style={style.subContainersContent}>Location</Text>
-            </Pressable>
-            <Pressable>
-              <Text style={style.subContainersContent}>Gender</Text>
-            </Pressable>
+          </View>
+          <View style={style.options}>
+            <FontAwesome name="comment" size={30} color="green" />
+            <View style={style.optionsInside}>
+              <Text style={style.optionsTitle}>What people are saying?</Text>
+              <Text style={style.optionsDes}>
+                The best app for events and making friends.
+              </Text>
+            </View>
+          </View>
+
+          <View style={style.bottomContainer}>
+            <View style={style.bottomInsideContainer}>
+              <Entypo name="new" size={24} color="black" />
+              <Text style={style.bottomInsideContainerText}>What's new</Text>
+            </View>
+            <View style={style.bottomInsideContainer}>
+              <AntDesign name="questioncircle" size={24} color="black" />
+              <Text style={style.bottomInsideContainerText}>Help Center</Text>
+            </View>
           </View>
 
           <View>
@@ -80,58 +93,108 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    backgroundColor: "#fff",
+    backgroundColor: "#F0F0F0",
+    paddingStart: 15,
+    paddingEnd: 15,
   },
   scrollViewContent: {
-    flexGrow: 1,
+    height: "100%",
   },
+
   insideView: {
     alignItems: "center",
-    padding: 10,
+
     width: "100%",
   },
+  topView: {
+    width: "100%",
+    height: "auto",
+    flexDirection: "row",
+  },
   profileName: {
-    fontSize: 25,
-    margin: 10,
-    fontWeight: "bold",
-    marginStart: 25,
+    fontSize: 20,
+    fontWeight: "500",
+    marginStart: 5,
     color: "black",
   },
-  dp: {
-    width: 150,
-    height: 150,
+  profilImage: {
+    width: 50,
+    height: 50,
     borderRadius: 100,
-    marginBottom: 20,
   },
-  containerHeader: {
-    fontSize: 18,
-    margin: 7,
-    fontWeight: "bold",
-    marginStart: 25,
-    color: "black",
+  profilNameView: {
+    marginStart: 5,
+    height: "100%",
+    width: "45%",
   },
-  subContainersContent: {
-    fontSize: 15,
-    margin: 7,
-    marginStart: 25,
-    color: "black",
+  iconView: {
+    height: "100%",
+    width: "40%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
+
   subContainers: {
     justifyContent: "center",
-    width: "85%",
-    marginBottom: 30,
-    borderRadius: 20,
+    width: "100%",
+    height: 250,
+    borderRadius: 10,
     backgroundColor: "white",
     elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 2, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 4,
+    marginTop: 15,
+  },
+  pormotionBanner: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 10,
+  },
+  options: {
+    height: 60,
     borderWidth: 1,
+    width: "100%",
+    marginTop: 16,
+    padding: 10,
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    borderColor: "#d3d3d3",
+  },
+  optionsInside: {
+    marginStart: 12,
+  },
+  optionsTitle: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  optionsDes: {
+    fontSize: 13,
+  },
+  bottomContainer: {
+    marginTop: 15,
+    flexDirection: "row",
+    width: "100%",
+  },
+  bottomInsideContainer: {
+    width: "44%",
+    margin: 10,
+    height: 60,
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    borderColor: "#d3d3d3",
+  },
+  bottomInsideContainerText: {
+    marginStart: 10,
   },
   logoutButton: {
     width: 200,
-    height: 50,
+    height: 40,
+    marginTop: 15,
     backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
