@@ -26,6 +26,9 @@ export default function Settings({ navigation }) {
     });
   };
 
+  const goToHelp = () => {
+    navigation.navigate("Help");
+  };
   return (
     <SafeAreaView style={style.container}>
       <ScrollView style={style.scrollViewContent}>
@@ -74,7 +77,9 @@ export default function Settings({ navigation }) {
             </View>
             <View style={style.bottomInsideContainer}>
               <AntDesign name="questioncircle" size={24} color="black" />
-              <Text style={style.bottomInsideContainerText}>Help Center</Text>
+              <Text style={style.bottomInsideContainerText} onPress={goToHelp}>
+                Help Center
+              </Text>
             </View>
           </View>
 
