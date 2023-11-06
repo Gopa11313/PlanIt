@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  StatusBar,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -14,6 +15,7 @@ import Calender from "../../assets/calender.png";
 import Ticket from "../../assets/ticket.png";
 import Dress from "../../assets/dress.png";
 import Location from "../../assets/location.png";
+
 export default function HomeProfileDetais({ route }) {
   const { userData } = route.params;
   const data = [
