@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { StatusBar } from 'react-native';
+
 import {
+  StatusBar,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -15,11 +18,13 @@ import Ticket from "../../assets/ticket.png";
 import Dress from "../../assets/dress.png";
 import Modal from "react-native-modal";
 import Location from "../../assets/location.png";
+
 import { FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native";
 import { db } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+
 export default function HomeProfileDetais({ route }) {
   const { userData } = route.params;
   const [message, setMessage] = useState("");

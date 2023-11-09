@@ -29,6 +29,15 @@ export default function Settings({ navigation }) {
   const goToHelp = () => {
     navigation.navigate("Help");
   };
+
+  const goToEditProfile = () => {
+    navigation.navigate("EditProfile");
+  };
+
+  const goToPreferences = () => {
+    navigation.navigate("Preferences");
+  };
+
   return (
     <SafeAreaView style={style.container}>
       <ScrollView style={style.scrollViewContent}>
@@ -42,8 +51,12 @@ export default function Settings({ navigation }) {
               </Text>
             </View>
             <View style={style.iconView}>
-              <AntDesign name="edit" size={24} color="black" />
-              <Ionicons name="options" size={24} color="black" />
+              <Pressable onPress={goToEditProfile}>
+                <AntDesign name="edit" size={24} color="black" />
+              </Pressable>
+              <Pressable onPress={goToPreferences}>
+                <Ionicons name="options" size={24} color="black" />
+              </Pressable>
               <AntDesign name="setting" size={24} color="black" />
             </View>
           </View>
