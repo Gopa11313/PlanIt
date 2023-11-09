@@ -9,6 +9,7 @@ import Dashboard from "./screens/dashBoard/Dashboard";
 import EventDetails from "./screens/bottom_Nav/EventDatails";
 import HomeProfileDetais from "./screens/bottom_Nav/HomeProfileDeatails";
 import Help from "./screens/bottom_Nav/Help";
+
 import Preferences from "./screens/bottom_Nav/Preferences";
 import EditProfile from "./screens/bottom_Nav/EditProfile";
 import Messages from "./screens/bottom_Nav/Messages";
