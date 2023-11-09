@@ -26,12 +26,11 @@ export default function Help({ navigation }) {
   };
   const createHelp = async () => {
     const help = {
-      id: "hello",
       name: name,
       email: email,
       problem: problem,
       explanation: explanation,
-      date: new Date().toDateString,
+      // date: new Date().toDateString,
     };
 
     const insertedDocument = await addDoc(collection(db, "Help"), help);
