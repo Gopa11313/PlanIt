@@ -17,7 +17,8 @@ import { db } from "../../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function Chats() {
+import { Pressable } from "react-native";
+export default function Chats({ navigation, route }) {
   useEffect(() => {
     getAllChats();
   }, []);
@@ -47,17 +48,20 @@ export default function Chats() {
 
     setChats(matchingItems);
   };
+  const goToMessage = () => {
+    navigation.navigate("Messages");
+  };
   const renderItem = ({ item }) => {
     console.log(item.chats[0].message);
     return (
       <View style={style.chats}>
-        <View style={style.chatItem}>
+        <Pressable style={style.chatItem} onPress={goToMessage}>
           <Image source={{ uri: item.Image[0] }} style={style.itemIamge} />
           <View style={style.textItem}>
             <Text style={style.name}>{item.name}</Text>
             <Text style={style.chatText}>{item.chats[0].message}</Text>
           </View>
-        </View>
+        </Pressable>
       </View>
     );
   };
