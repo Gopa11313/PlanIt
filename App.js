@@ -9,13 +9,10 @@ import Dashboard from "./screens/dashBoard/Dashboard";
 import EventDetails from "./screens/bottom_Nav/EventDatails";
 import HomeProfileDetais from "./screens/bottom_Nav/HomeProfileDeatails";
 import Help from "./screens/bottom_Nav/Help";
-<<<<<<< HEAD
 
-
-=======
 import Preferences from "./screens/bottom_Nav/Preferences";
 import EditProfile from "./screens/bottom_Nav/EditProfile";
->>>>>>> c06c686fe8a015b30cf8ed1077543f1becbfec69
+import Messages from "./screens/bottom_Nav/Messages";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -59,6 +56,7 @@ export default function App() {
 
         <Stack.Screen name="Preferences" component={Preferences}></Stack.Screen>
         <Stack.Screen name="Help" component={Help}></Stack.Screen>
+        <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
