@@ -11,6 +11,7 @@ import HomeProfileDetais from "./screens/bottom_Nav/HomeProfileDeatails";
 import Help from "./screens/bottom_Nav/Help";
 import Preferences from "./screens/bottom_Nav/Preferences";
 import EditProfile from "./screens/bottom_Nav/EditProfile";
+import Messages from "./screens/bottom_Nav/Messages";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
 
         <Stack.Screen name="Preferences" component={Preferences}></Stack.Screen>
         <Stack.Screen name="Help" component={Help}></Stack.Screen>
+        <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
