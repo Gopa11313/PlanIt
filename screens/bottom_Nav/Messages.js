@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
-import { View, Text, FlatList, TextInput } from "react-native";
+import { View, Text, FlatList, TextInput, StatusBar } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 export default function Messages() {
   const [message, setMessage] = useState("");
