@@ -81,7 +81,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.planit"
+    namespace 'com.anonymous.PlanIt'
     defaultConfig {
         applicationId 'com.anonymous.PlanIt'
         minSdkVersion rootProject.ext.minSdkVersion
@@ -137,7 +137,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    // def FLIPPER_VERSION = "0.182.0"
+
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";
@@ -163,11 +163,11 @@ dependencies {
         }
     }
 
-    debugImplementation("com.facebook.flipper:flipper:0.182.0")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.182.0" ){
+    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
     }
-    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:0.182.0")
+    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
