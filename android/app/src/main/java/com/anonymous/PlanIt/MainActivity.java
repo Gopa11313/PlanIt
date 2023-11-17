@@ -1,4 +1,4 @@
-package com.planit;
+package com.anonymous.PlanIt;
 
 import android.os.Build;
 import android.os.Bundle;

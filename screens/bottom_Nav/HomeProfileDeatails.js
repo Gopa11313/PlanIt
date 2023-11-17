@@ -26,6 +26,12 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 
 export default function HomeProfileDetais({ route }) {
   const { userData } = route.params;
+  const [image1, setimage1] = useState("");
+  const [image2, setimage2] = useState("");
+  useEffect(() => {
+    setimage1(userData.Image[0]);
+    setimage2(userData.Image[1]);
+  }, []);
   const [message, setMessage] = useState("");
   const data = [
     { id: "1", text: "Age", age: userData.Age },
@@ -68,14 +74,27 @@ export default function HomeProfileDetais({ route }) {
     <SafeAreaView style={style.contianer}>
       <ScrollView style={style.scrollView}>
         <View style={style.insideView}>
-          <Image style={style.image} source={{ url: userData.Image[0] }} />
+          <Image
+            source={{ uri: image1 }}
+            style={style.image}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
+          {/* <Image source={{ url: image1 }} style={style.image} /> */}
           <View style={style.secondView}>
             <Text style={style.category}>Quote</Text>
             <View style={style.categoryName}>
               <Text style={style.title}>{userData.Quote}</Text>
             </View>
           </View>
-          <Image style={style.image} source={{ url: userData.Image[1] }} />
+          <Image
+            source={{ uri: image2 }}
+            style={style.image}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
 
           <View style={style.thirdView}>
             <FlatList
@@ -92,7 +111,7 @@ export default function HomeProfileDetais({ route }) {
               }}
             />
             <View style={style.locationCase}>
-              <Image style={style.locationImage} source={Location} />
+              <Image source={Location} style={style.locationImage} />
               <Text style={style.location}>{userData.Address}</Text>
             </View>
           </View>
@@ -154,8 +173,8 @@ const style = StyleSheet.create({
   },
   image: {
     width: "100%",
-    marginTop: 15,
     height: 350,
+    marginTop: 15,
     borderRadius: 10,
   },
   secondView: {

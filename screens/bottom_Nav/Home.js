@@ -39,6 +39,7 @@ export default function Home({ navigation, route }) {
     toggleModal();
   };
   const setData = () => {
+    console.log(userData[counter].Image[0]);
     setImage(userData[counter].Image[0]);
     setLocation(userData[counter].Address);
     setBio(userData[counter].Bio);
@@ -108,7 +109,13 @@ export default function Home({ navigation, route }) {
             resizeMode="contain"
           >
             <View style={styles.mainInsideView}>
-              <Image style={styles.profileImage} source={{ url: image }} />
+              <Image
+                source={{ uri: image }}
+                style={styles.profileImage}
+                onError={(e) =>
+                  console.log("Error loading image:", e.nativeEvent.error)
+                }
+              />
             </View>
           </ImageBackground>
         </View>
