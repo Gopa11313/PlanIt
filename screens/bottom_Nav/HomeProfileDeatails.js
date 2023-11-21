@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { StatusBar } from 'react-native';
 
 import {
-  StatusBar,
   SafeAreaView,
   StyleSheet,
   Text,

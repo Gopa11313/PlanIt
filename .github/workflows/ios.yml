@@ -1,0 +1,33 @@
+name: iOS Build
+
+on:
+  push:
+    branches:
+      - dev_roney
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npx react-native info
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          pod install
+
+      - name: Build iOS app
+        run: |
+          npx react-native run-ios --configuration=Release
