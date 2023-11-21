@@ -98,10 +98,17 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('release.keystore')
+            storePassword 'android123!@#12T'
+            keyAlias 'androidrelesekey'
+            keyPassword 'android123!@#12T'
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
