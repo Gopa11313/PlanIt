@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50306660148",
+    "project_id": "planit-27639",
+    "storage_bucket": "planit-27639.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50306660148:android:569c82b6713c67fd1f9761",
+        "android_client_info": {
+          "package_name": "com.anonymous.PlanIt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzypZ6Z5w2kcg0esIOd7K5LtwKb7CL1zQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
