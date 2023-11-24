@@ -42,7 +42,7 @@ jobs:
         run: npm install -g appcenter-cli
 
       - name: Login to App Center
-        run: appcenter login --token 6e21a9301938b66a4abdc9f449fcbfaf4e26e52f4
+        run: appcenter login --token 94a764e2-0026-4a2b-b356-c1310dfa3cc2
 
       - name: Set App Center App
         run: appcenter apps set-current --app PlanIt
