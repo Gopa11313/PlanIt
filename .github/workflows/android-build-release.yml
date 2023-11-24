@@ -42,7 +42,10 @@ jobs:
         run: npm install -g appcenter-cli
 
       - name: Login to App Center
-        run: appcenter login --token 6e21a9301938b66a4abdc9f449fcbfaf4e26e52f
+        run: appcenter login --token 6e21a9301938b66a4abdc9f449fcbfaf4e26e52f4
+
+      - name: Set App Center App
+        run: appcenter apps set-current --app PlanIt
 
       - name: Distribute to App Center
         run: appcenter distribute release -f android/app/build/outputs/bundle/release/app-release.aab -g Gopal
