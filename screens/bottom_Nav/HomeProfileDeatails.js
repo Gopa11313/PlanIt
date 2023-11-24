@@ -1,49 +1,46 @@
 import React, { useEffect, useState } from "react";
-
-
+import { StatusBar } from "react-native";
 import {
-  StatusBar,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
   Image,
   ScrollView,
-  ImageBackground,
   Pressable,
   FlatList,
+  TextInput,
 } from "react-native";
-import Calender from "../../assets/calender.png";
-import Ticket from "../../assets/ticket.png";
-import Dress from "../../assets/dress.png";
 import Modal from "react-native-modal";
-import Location from "../../assets/location.png";
-
 import { FontAwesome } from "@expo/vector-icons";
-import { TextInput } from "react-native";
+import Location from "../../assets/location.png";
 import { db } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+} from "firebase/firestore";
 
 export default function HomeProfileDetais({ route }) {
   const { userData } = route.params;
   const [message, setMessage] = useState("");
   const data = [
     { id: "1", text: "Age", age: userData.Age },
-    { id: "2", text: "Alcohal", age: "No" },
+    { id: "2", text: "Alcohol", age: "No" },
     { id: "3", text: "Smoking", age: "No" },
   ];
   const [isModalVisible, setModalVisible] = useState(false);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
-    if (isModalVisible == true) {
-    }
   };
+
   const renderItem = ({ item }) => (
-    <View style={style.renderItem}>
+    <View style={styles.renderItem}>
       <Text>{item.text}:</Text>
       <Text>{item.age}</Text>
-      <View style={style.renderEndView} />
+      <View style={styles.renderEndView} />
     </View>
   );
 
@@ -56,51 +53,43 @@ export default function HomeProfileDetais({ route }) {
         : [{ name: userData.name, message }],
     };
 
-    const insertedDocument = await addDoc(collection(db, "Chats"), Chat);
-    console.log(insertedDocument);
-    alert("Enjoy.");
+    await addDoc(collection(db, "Chats"), Chat);
 
-    setEmail("");
-    setName("");
-    setExplanation("");
-    setExplanation("");
+    alert("Message Sent!");
+
+    setMessage("");
   };
+
   return (
-    <SafeAreaView style={style.contianer}>
-      <ScrollView style={style.scrollView}>
-        <View style={style.insideView}>
-          <Image style={style.image} source={{ url: userData.Image[0] }} />
-          <View style={style.secondView}>
-            <Text style={style.category}>Quote</Text>
-            <View style={style.categoryName}>
-              <Text style={style.title}>{userData.Quote}</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.insideView}>
+          <Image style={styles.image} source={{ uri: userData.Image[0] }} />
+          <View style={styles.secondView}>
+            <Text style={styles.category}>Quote</Text>
+            <View style={styles.categoryName}>
+              <Text style={styles.title}>{userData.Quote}</Text>
             </View>
           </View>
-          <Image style={style.image} source={{ url: userData.Image[1] }} />
+          <Image style={styles.image} source={{ uri: userData.Image[1] }} />
 
-          <View style={style.thirdView}>
+          <View style={styles.thirdView}>
             <FlatList
               data={data}
               renderItem={renderItem}
               keyExtractor={(item) => item.id}
               horizontal={true}
             />
-            <View
-              style={{
-                width: "100%",
-                height: 2,
-                backgroundColor: "black",
-              }}
-            />
-            <View style={style.locationCase}>
-              <Image style={style.locationImage} source={Location} />
-              <Text style={style.location}>{userData.Address}</Text>
+            <View style={styles.separator} />
+            <View style={styles.locationCase}>
+              <Image style={styles.locationImage} source={Location} />
+              <Text style={styles.location}>{userData.Address}</Text>
             </View>
           </View>
-          <View style={style.thirdView}>
-            <Text style={style.description}> {userData.Bio}</Text>
-            <Pressable style={style.bookmarkBtn} onPress={toggleModal}>
-              <Text style={{ color: "white", fontSize: 15 }}>Match</Text>
+          <View style={styles.thirdView}>
+            <Text style={styles.description}>{userData.Bio}</Text>
+            <Pressable style={styles.bookmarkBtn} onPress={toggleModal}>
+              <Text style={styles.buttonText}>Match</Text>
             </Pressable>
           </View>
         </View>
@@ -108,19 +97,19 @@ export default function HomeProfileDetais({ route }) {
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={toggleModal}
-        style={style.modal}
+        style={styles.modal}
       >
-        <View style={style.modalContent}>
+        <View style={styles.modalContent}>
           <View>
             <Image
               source={{ uri: userData.Image[0] }}
-              style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
+              style={styles.modalImage}
             />
-            <Text style={style.category}> {userData.name}</Text>
+            <Text style={styles.category}> {userData.name}</Text>
           </View>
-          <View style={style.messageSection}>
+          <View style={styles.messageSection}>
             <TextInput
-              style={style.input}
+              style={styles.input}
               value={message}
               onChangeText={setMessage}
               placeholder="Send a message"
@@ -137,12 +126,12 @@ export default function HomeProfileDetais({ route }) {
     </SafeAreaView>
   );
 }
-const style = StyleSheet.create({
-  contianer: {
+
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
-    alignItems: "top",
+    alignItems: "center",
     justifyContent: "top",
-    backgroundColor: "white",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     backgroundColor: "#F0F0F0",
   },
@@ -184,24 +173,23 @@ const style = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
-  //reder ITem
+  // renderItem
   renderItem: {
-    width: 110, // Adjust the width as needed
+    width: 110,
     marginHorizontal: 8,
     alignItems: "center",
     flexDirection: "row",
     height: 110,
   },
-  renderImage: {
-    width: 18,
-    height: 18,
-    margin: 5,
-  },
-
   renderEndView: {
     height: 35,
     marginStart: 20,
     width: 2,
+    backgroundColor: "black",
+  },
+  separator: {
+    width: "100%",
+    height: 2,
     backgroundColor: "black",
   },
   thirdView: {
@@ -228,7 +216,6 @@ const style = StyleSheet.create({
   locationImage: {
     width: 18,
     height: 24,
-    objectFit: "fill",
     marginEnd: 10,
   },
   description: {
@@ -243,6 +230,10 @@ const style = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
+  buttonText: {
+    color: "white",
+    fontSize: 15,
+  },
   modal: {
     position: "absolute",
     bottom: 0,
@@ -254,26 +245,26 @@ const style = StyleSheet.create({
     backgroundColor: "white",
     padding: 16,
     width: "100%",
-    borderTopLeftRadius: 20, // Adjust the radius as needed
+    borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-  secondModalView: {
-    marginTop: 10,
+  modalImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 100 / 2,
   },
   messageSection: {
     display: "flex",
     flex: 2,
     justifyContent: "center",
     alignItems: "center",
-    alignContent: "center",
     flexDirection: "row",
     marginBottom: 15,
   },
   input: {
-    width: "auto",
+    flex: 1,
     borderWidth: 1,
     marginRight: 5,
-    flex: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,

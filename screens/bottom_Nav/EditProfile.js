@@ -6,111 +6,149 @@ import {
   Image,
   Button,
   FlatList,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   Pressable,
 } from "react-native";
 import Gurkirat from "../../assets/gurkirat.png";
-import ImagePicker from "react-native-image-picker";
+import * as ImagePicker from 'expo-image-picker';
 import { db, storage } from "../../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
+import { collection, getDocs, updateDoc, addDoc, deleteDoc, doc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 const EditProfile = () => {
-  // const [images, setImages] = useState([]);
-  // const [selectedImage, setSelectedImage] = useState(null);
 
-  // useEffect(() => {
-  //   // Fetch user's images from Firebase Storage and populate the 'images' state.
-  //   // Replace 'yourUserId' with the actual user's ID or reference.
-  //   // Example: const userImagesRef = storage.ref('images/yourUserId');
-  //   const userImagesRef = storage.ref("images/yourUserId");
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
-  //   userImagesRef.listAll().then((result) => {
-  //     const imageUrls = result.items.map((item) => item.getDownloadURL());
-  //     Promise.all(imageUrls).then((urls) => {
-  //       setImages(urls);
-  //     });
-  //   });
-  // }, []);
+  useEffect(() => {
+    getAllUserData();
+  }, []);
 
-  // const openImagePicker = () => {
-  //   const options = {
-  //     title: "Select Image",
-  //     storageOptions: {
-  //       skipBackup: true,
-  //       path: "images",
-  //     },
-  //   };
+  async function getAllUserData() {
+    try {
+      const usersCollection = collection(db, "Users");
+      const querySnapshot = await getDocs(usersCollection);
+      const userData = [];
+      const userEmail = await AsyncStorage.getItem("email");
+      querySnapshot.forEach((doc) => {
+        const user = {
+          id: doc.id,
+          ...doc.data(),
+        };
+        if (userEmail != doc.data().email) {
+          userData.push(user);
+        }
+      });
+      setName(userData[0].name);
+      setUsername(userData[0].username);
+      // Fetch and set the image URL if available
+      setSelectedImage(userData[0].Image[0]);
+    } catch (error) {
+      console.error("Error retrieving user data:", error);
+    }
+  }
 
-  //   ImagePicker.showImagePicker(options, (response) => {
-  //     if (response.didCancel) {
-  //       // User canceled the image picker.
-  //     } else if (response.error) {
-  //       // Handle error during image selection.
-  //     } else {
-  //       // Upload the selected image to Firebase Storage.
-  //       const imageRef = storage.ref(`images/yourUserId/${response.fileName}`);
+  const updateUserData = async () => {
+    try {
+      const userDocumentId = "userDocumentId";
+      const userDocRef = doc(db, "Users", userDocumentId);
+      await updateDoc(userDocRef, {
+        name: name,
+        username: username,
+      });
+      console.log("User data updated successfully!");
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
 
-  //       imageRef.putFile(response.path).then(() => {
-  //         // Image uploaded successfully. Refresh the images list.
-  //         // You may also want to update your Firestore database to link this image to the user.
-  //         // Add the image URL to the 'images' state for display.
-  //         imageRef.getDownloadURL().then((url) => {
-  //           setImages([...images, url]);
-  //         });
-  //       });
-  //     }
-  //   });
-  // };
+  const handleImagePress = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+  
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+      });
+  
+      if (!result.cancelled) {
+        setSelectedImage(result.uri);
+        uploadImage(result.uri);
+      }
+    } catch (error) {
+      console.error("Error picking an image:", error);
+    }
+  };
+  
+  const uploadImage = async (uri) => {
+    try {
+      const imageRef = storage.ref().child(`images/${name}`);
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      await imageRef.put(blob);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
-  // const removeImage = (imageUrl) => {
-  //   // Remove the image from Firebase Storage.
-  //   const imageRef = storage.refFromURL(imageUrl);
-  //   imageRef.delete().then(() => {
-  //     // Image deleted successfully. Remove it from the 'images' state.
-  //     const updatedImages = images.filter((image) => image !== imageUrl);
-  //     setImages(updatedImages);
-  //   });
-  // };
+  const removeImage = async () => {
+    try {
+      const imageRef = storage.ref().child(`images/${name}`);
+      await imageRef.delete();
+      setSelectedImage(null);
+    } catch (error) {
+      console.error("Error deleting image:", error);
+    }
+  };
 
   return (
-    <View>
+    <View style={style.container}>
       <View style={{ flexDirection: "row" }}>
-        <Image style={style.imageView} source={Gurkirat} />
-        <Pressable style={style.addImageButton}>
-          <Ionicons name="add-circle-outline" size={24} color="black" />
+        {selectedImage ? (
+          <Image style={style.imageView} source={{ uri: selectedImage }} />
+        ) : (
+          <Image style={style.imageView} source={Gurkirat} />
+        )}
+        <Pressable style={style.addImageButton} onPress={handleImagePress}>
+          <Text>Add Image</Text>
         </Pressable>
       </View>
 
       <View style={style.infoInputBox}>
-        <TextInput placeholder="Name"></TextInput>
-        <TextInput placeholder="Username"></TextInput>
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+        />
+        <TextInput
+          placeholder="Username"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+        />
       </View>
 
       <View style={{ alignItems: "center" }}>
-        <Pressable style={style.saveButton}>
+        <Pressable style={style.saveButton} onPress={updateUserData}>
           <Text style={style.buttonText}>Save</Text>
         </Pressable>
       </View>
-      {/* {selectedImage && (
-        <Image
-          source={{ uri: selectedImage }}
-          style={{ width: 200, height: 200 }}
-        />
-      )} */}
-      {/* <FlatList
-        data={images}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <View>
-            <Image source={{ uri: item }} style={{ width: 100, height: 100 }} />
-            <TouchableOpacity onPress={() => removeImage(item)}>
-              <Text>Remove</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      /> */}
+
+      {selectedImage && (
+        <TouchableOpacity onPress={removeImage}>
+          <Text style={{ color: "red", textAlign: "center" }}>Remove Image</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
