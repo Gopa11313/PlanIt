@@ -33,29 +33,34 @@ export default function Chats({ navigation, route }) {
   };
   const getAllChats = async () => {
     const id = await AsyncStorage.getItem("userDocId");
-    console.log("My id:" + id);
     const itemsCollection = collection(db, "Chats"); // Replace 'yourCollection' with your collection name
     const querySnapshot = await getDocs(itemsCollection);
 
     const matchingItems = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      console.log(data);
       if (data && data.ownerId === id) {
         matchingItems.push({ id: doc.id, ...data });
       }
     });
-
+    console.log(matchingItems);
     setChats(matchingItems);
   };
-  const goToMessage = () => {
-    navigation.navigate("Messages");
+  const goToMessage = (data) => {
+    navigation.navigate("Messages", {
+      data,
+    });
   };
   const renderItem = ({ item }) => {
     console.log(item.chats[0].message);
     return (
       <View style={style.chats}>
-        <Pressable style={style.chatItem} onPress={goToMessage}>
+        <Pressable
+          style={style.chatItem}
+          onPress={() => {
+            goToMessage(item);
+          }}
+        >
           <Image source={{ uri: item.Image[0] }} style={style.itemIamge} />
           <View style={style.textItem}>
             <Text style={style.name}>{item.name}</Text>

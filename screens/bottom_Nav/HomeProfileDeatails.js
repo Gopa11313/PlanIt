@@ -17,18 +17,22 @@ import Ticket from "../../assets/ticket.png";
 import Dress from "../../assets/dress.png";
 import Modal from "react-native-modal";
 import Location from "../../assets/location.png";
-
+import { v4 as uuidv4 } from "uuid";
 import { FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native";
 import { db } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 export default function HomeProfileDetais({ route }) {
   const { userData } = route.params;
   const [image1, setimage1] = useState("");
   const [image2, setimage2] = useState("");
   useEffect(() => {
+    const { id, ...userDataWithoutId } = userData;
+    console.log(userData);
+    console.log(userData);
     setimage1(userData.Image[0]);
     setimage2(userData.Image[1]);
   }, []);
@@ -53,16 +57,18 @@ export default function HomeProfileDetais({ route }) {
   );
 
   const createChat = async () => {
+    const { id, ...userDataWithoutId } = userData;
+    console.log(userDataWithoutId);
     const Chat = {
+      Id: uuidv4(),
       ownerId: await AsyncStorage.getItem("userDocId"),
-      ...userData,
+      ...userDataWithoutId,
       chats: userData.chats
         ? [...userData.chats, { name: userData.name, message }]
-        : [{ name: userData.name, message }],
+        : [{ name: "Your Name", message }],
     };
 
     const insertedDocument = await addDoc(collection(db, "Chats"), Chat);
-    console.log(insertedDocument);
     alert("Enjoy.");
 
     setEmail("");
