@@ -52,6 +52,7 @@ export default function EventDetails({ route }) {
       collection(db, "Favorite"),
       favDetails
     );
+    alert("Successfully added.");
     showToast();
   };
   return (
