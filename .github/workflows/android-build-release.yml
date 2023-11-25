@@ -48,4 +48,4 @@ jobs:
       #   run: appcenter apps set-current --app PlanIt
 
       - name: Distribute to App Center
-        run: appcenter distribute release --app com.anonymous.PlanIt --file android/app/build/outputs/bundle/release/app-release.aab --group "Collaborators" --build-version 1.0.2
+        run: appcenter distribute release --app "94a764e2-0026-4a2b-b356-c1310dfa3cc2" --file android/app/build/outputs/bundle/release/app-release.aab --group "Collaborators" --build-version 1.0.2
