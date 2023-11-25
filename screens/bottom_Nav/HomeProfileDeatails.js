@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar } from "react-native";
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,18 +11,26 @@ import {
   TextInput,
 } from "react-native";
 import Modal from "react-native-modal";
+import Location from "../../assets/location.png";
+import { v4 as uuidv4 } from "uuid";
 import { FontAwesome } from "@expo/vector-icons";
 import Location from "../../assets/location.png";
 import { db } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  collection,
-  addDoc,
-  getDocs,
-} from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 export default function HomeProfileDetais({ route }) {
   const { userData } = route.params;
+  const [image1, setimage1] = useState("");
+  const [image2, setimage2] = useState("");
+  useEffect(() => {
+    const { id, ...userDataWithoutId } = userData;
+    console.log(userData);
+    console.log(userData);
+    setimage1(userData.Image[0]);
+    setimage2(userData.Image[1]);
+  }, []);
   const [message, setMessage] = useState("");
   const data = [
     { id: "1", text: "Age", age: userData.Age },
@@ -45,33 +52,48 @@ export default function HomeProfileDetais({ route }) {
   );
 
   const createChat = async () => {
+    const { id, ...userDataWithoutId } = userData;
+    console.log(userDataWithoutId);
     const Chat = {
+      Id: uuidv4(),
       ownerId: await AsyncStorage.getItem("userDocId"),
-      ...userData,
+      ...userDataWithoutId,
       chats: userData.chats
         ? [...userData.chats, { name: userData.name, message }]
-        : [{ name: userData.name, message }],
+        : [{ name: "Your Name", message }],
     };
 
-    await addDoc(collection(db, "Chats"), Chat);
-
-    alert("Message Sent!");
+    const insertedDocument = await addDoc(collection(db, "Chats"), Chat);
+    alert("Enjoy.");
 
     setMessage("");
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.insideView}>
-          <Image style={styles.image} source={{ uri: userData.Image[0] }} />
-          <View style={styles.secondView}>
-            <Text style={styles.category}>Quote</Text>
-            <View style={styles.categoryName}>
-              <Text style={styles.title}>{userData.Quote}</Text>
+    <SafeAreaView style={style.contianer}>
+      <ScrollView style={style.scrollView}>
+        <View style={style.insideView}>
+          <Image
+            source={{ uri: image1 }}
+            style={style.image}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
+          {/* <Image source={{ url: image1 }} style={style.image} /> */}
+          <View style={style.secondView}>
+            <Text style={style.category}>Quote</Text>
+            <View style={style.categoryName}>
+              <Text style={style.title}>{userData.Quote}</Text>
             </View>
           </View>
-          <Image style={styles.image} source={{ uri: userData.Image[1] }} />
+          <Image
+            source={{ uri: image2 }}
+            style={style.image}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
 
           <View style={styles.thirdView}>
             <FlatList
@@ -80,10 +102,16 @@ export default function HomeProfileDetais({ route }) {
               keyExtractor={(item) => item.id}
               horizontal={true}
             />
-            <View style={styles.separator} />
-            <View style={styles.locationCase}>
-              <Image style={styles.locationImage} source={Location} />
-              <Text style={styles.location}>{userData.Address}</Text>
+            <View
+              style={{
+                width: "100%",
+                height: 2,
+                backgroundColor: "black",
+              }}
+            />
+            <View style={style.locationCase}>
+              <Image source={Location} style={style.locationImage} />
+              <Text style={style.location}>{userData.Address}</Text>
             </View>
           </View>
           <View style={styles.thirdView}>
@@ -144,8 +172,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    marginTop: 15,
     height: 350,
+    marginTop: 15,
     borderRadius: 10,
   },
   secondView: {

@@ -12,7 +12,13 @@ import {
   Pressable,
 } from "react-native";
 import { db } from "../../firebaseConfig";
-import { doc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -34,7 +40,7 @@ export default function Chats({ navigation, route }) {
 
   const getAllChats = async () => {
     const id = await AsyncStorage.getItem("userDocId");
-    const itemsCollection = collection(db, "Chats");
+    const itemsCollection = collection(db, "Chats"); // Replace 'yourCollection' with your collection name
     const querySnapshot = await getDocs(itemsCollection);
 
     const matchingItems = [];
@@ -44,12 +50,13 @@ export default function Chats({ navigation, route }) {
         matchingItems.push({ id: doc.id, ...data });
       }
     });
-
+    console.log(matchingItems);
     setChats(matchingItems);
   };
-
-  const goToMessage = () => {
-    navigation.navigate("Messages");
+  const goToMessage = (data) => {
+    navigation.navigate("Messages", {
+      data,
+    });
   };
 
   const deleteChat = async (chatId) => {
@@ -84,8 +91,13 @@ export default function Chats({ navigation, route }) {
   const renderItem = ({ item }) => {
     return (
       <View style={styles.chats}>
-        <Pressable style={styles.chatItem} onPress={goToMessage}>
-          <Image source={{ uri: item.Image[0] }} style={styles.itemImage} />
+        <Pressable
+          style={styles.chatItem}
+          onPress={() => {
+            goToMessage(item);
+          }}
+        >
+          <Image source={{ uri: item.Image[0] }} style={styles.itemIamge} />
           <View style={styles.textItem}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.chatText}>{item.chats[0].message}</Text>

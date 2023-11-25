@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import { useEffect } from "react";
+import { StyleSheet, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "./screens/onboarding/SpalshScreen";
@@ -13,9 +14,25 @@ import Help from "./screens/bottom_Nav/Help";
 import Preferences from "./screens/bottom_Nav/Preferences";
 import EditProfile from "./screens/bottom_Nav/EditProfile";
 import Messages from "./screens/bottom_Nav/Messages";
-
+import messaging from "@react-native-firebase/messaging";
+import {
+  requestUserPermission,
+  getToken,
+  notificationListenr,
+} from "./utils/MessageUtlis";
 const Stack = createNativeStackNavigator();
 export default function App() {
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+  useEffect(() => {
+    requestUserPermission();
+    notificationListenr();
+  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">

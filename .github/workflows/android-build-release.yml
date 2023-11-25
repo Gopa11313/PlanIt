@@ -1,0 +1,51 @@
+name: "PlanIt"
+
+on:
+  push:
+    branches:
+      - dev_gopal
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npx react-native info
+
+      - name: Build application
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+
+      - name: Upload application
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 3
+
+      - name: Install App Center CLI
+        run: npm install -g appcenter-cli
+
+      - name: Login to App Center
+        run: appcenter login --token ac255953857911737209ab101159e2e664968a0a
+
+      # - name: Set App Center App
+      #   run: appcenter apps set-current --app PlanIt
+
+      - name: Distribute to App Center
+        run: appcenter distribute release --app G9-PlanIt/PlanIt --file android/app/build/outputs/bundle/release/app-release.aab --group "Collaborators" --build-version 1.0.2

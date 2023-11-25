@@ -59,14 +59,28 @@ export default function EventDetails({ route }) {
     <SafeAreaView style={style.contianer}>
       <ScrollView style={style.scrollView}>
         <View style={style.insideView}>
-          <Image style={style.image} source={{ url: selectedMarker.image }} />
+          <Image
+            source={{ uri: selectedMarker.image }}
+            style={style.image}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
+          {/* <Image source={{ url: selectedMarker.image }} style={style.image} /> */}
           <View style={style.secondView}>
             <Text style={style.category}>Toronto Sunday Events</Text>
             <View style={style.categoryName}>
               <Text style={style.title}>{selectedMarker.name}</Text>
             </View>
           </View>
-          <Image style={style.image} source={{ url: selectedMarker.image2 }} />
+          <Image
+            source={{ uri: selectedMarker.image2 }}
+            style={style.image}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
+          {/* <Image source={{ url: selectedMarker.image2 }} style={style.image} /> */}
 
           <View style={style.thirdView}>
             <FlatList
@@ -83,7 +97,7 @@ export default function EventDetails({ route }) {
               }}
             />
             <View style={style.locationCase}>
-              <Image style={style.locationImage} source={Location} />
+              <Image source={Location} style={style.locationImage} />
               <Text style={style.location}>{selectedMarker.address}</Text>
             </View>
           </View>
