@@ -44,8 +44,8 @@ jobs:
       - name: Login to App Center
         run: appcenter login --token ac255953857911737209ab101159e2e664968a0a
 
-      - name: Set App Center App
-        run: appcenter apps set-current --app PlanIt
+      # - name: Set App Center App
+      #   run: appcenter apps set-current --app PlanIt
 
       - name: Distribute to App Center
         run: appcenter distribute release --app PlanIt --file android/app/build/outputs/bundle/release/app-release.aab --group "Collaborators" --build-version 1.0.2
