@@ -28,6 +28,7 @@ export default function Home({ navigation, route }) {
   const [bio, setBio] = useState("");
   const [age, setAge] = useState(0);
   const [counter, setCounter] = useState(0);
+
   useEffect(() => {
     getAllUserData();
   }, []);
@@ -108,7 +109,7 @@ export default function Home({ navigation, route }) {
             resizeMode="contain"
           >
             <View style={styles.mainInsideView}>
-              <Image style={styles.profileImage} source={{ url: image }} />
+              <Image style={styles.profileImage} source={{ uri: image }} />
             </View>
           </ImageBackground>
         </View>

@@ -24,12 +24,18 @@ export default function Explore({ navigation, route }) {
     getAllEventsData();
     getCurrentLocation();
   }, []);
+  
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [events, setEvents] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [latitude, setLatitude] = useState(37.78825);
-  const [longitude, setLongitude] = useState(37.78825);
+
+  // User's current location state
+  const [userLocation, setUserLocation] = useState({
+    latitude: 37.78825,
+    longitude: -122.4324,
+  });
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
     console.log(selectedMarker);
@@ -76,10 +82,13 @@ export default function Explore({ navigation, route }) {
         location.coords.latitude,
         location.coords.longitude
       );
-      setLatitude(location.coords.latitude);
-      setLongitude(location.coords.longitude);
-      console.log(location);
-      alert(JSON.stringify(location));
+
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+
+     console.log(location);
     } catch (err) {
       console.log(err);
     }
@@ -89,9 +98,9 @@ export default function Explore({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <MapView
         style={styles.mapView}
-        initialRegion={{
-          latitude: latitude,
-          longitude: longitude,
+        region={{
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}

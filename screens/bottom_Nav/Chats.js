@@ -8,22 +8,22 @@ import {
   FlatList,
   ScrollView,
   RefreshControl,
+  Alert,
+  Pressable,
 } from "react-native";
-import Gurkirat from "../../assets/gurkirat.png";
-import Gopal from "../../assets/gopal.png";
-import Roni from "../../assets/gurkiSecond.png";
-import Mert from "../../assets/secondImage.jpg";
 import { db } from "../../firebaseConfig";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { doc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Pressable } from "react-native";
+
 export default function Chats({ navigation, route }) {
+  const [chats, setChats] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+
   useEffect(() => {
     getAllChats();
   }, []);
-  const [chats, setChats] = useState([]);
-  const [refreshing, setRefreshing] = React.useState(false);
+
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -31,16 +31,15 @@ export default function Chats({ navigation, route }) {
       setRefreshing(false);
     }, 2000);
   };
+
   const getAllChats = async () => {
     const id = await AsyncStorage.getItem("userDocId");
-    console.log("My id:" + id);
-    const itemsCollection = collection(db, "Chats"); // Replace 'yourCollection' with your collection name
+    const itemsCollection = collection(db, "Chats");
     const querySnapshot = await getDocs(itemsCollection);
 
     const matchingItems = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      console.log(data);
       if (data && data.ownerId === id) {
         matchingItems.push({ id: doc.id, ...data });
       }
@@ -48,33 +47,70 @@ export default function Chats({ navigation, route }) {
 
     setChats(matchingItems);
   };
+
   const goToMessage = () => {
     navigation.navigate("Messages");
   };
+
+  const deleteChat = async (chatId) => {
+    try {
+      const chatDocRef = doc(db, "Chats", chatId);
+      await deleteDoc(chatDocRef);
+      getAllChats();
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
+  };
+
+  const confirmDeleteChat = (chatId) => {
+    Alert.alert(
+      "Delete Chat",
+      "Are you sure you want to delete this chat?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => deleteChat(chatId),
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const renderItem = ({ item }) => {
-    console.log(item.chats[0].message);
     return (
-      <View style={style.chats}>
-        <Pressable style={style.chatItem} onPress={goToMessage}>
-          <Image source={{ uri: item.Image[0] }} style={style.itemIamge} />
-          <View style={style.textItem}>
-            <Text style={style.name}>{item.name}</Text>
-            <Text style={style.chatText}>{item.chats[0].message}</Text>
+      <View style={styles.chats}>
+        <Pressable style={styles.chatItem} onPress={goToMessage}>
+          <Image source={{ uri: item.Image[0] }} style={styles.itemImage} />
+          <View style={styles.textItem}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.chatText}>{item.chats[0].message}</Text>
           </View>
+          <Pressable
+            style={styles.deleteButton}
+            onPress={() => confirmDeleteChat(item.id)}
+          >
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </Pressable>
         </Pressable>
       </View>
     );
   };
+
   return (
     <ScrollView
-      contentContainerStyle={style.scroll}
+      contentContainerStyle={styles.scroll}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <SafeAreaView style={style.container}>
-        <View style={style.mainView}>
-          <Text style={style.mainText}>Matches</Text>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.mainView}>
+          <Text style={styles.mainText}>Matches</Text>
           <FlatList
             data={chats}
             renderItem={renderItem}
@@ -88,7 +124,7 @@ export default function Chats({ navigation, route }) {
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
@@ -113,7 +149,6 @@ const style = StyleSheet.create({
     marginTop: 10,
     alignItems: "center",
   },
-
   chatItem: {
     width: "100%",
     height: 80,
@@ -121,7 +156,7 @@ const style = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
-  itemIamge: {
+  itemImage: {
     height: "100%",
     width: 60,
     borderRadius: 130,
@@ -135,5 +170,15 @@ const style = StyleSheet.create({
   },
   chatText: {
     fontSize: 13,
+  },
+  deleteButton: {
+    marginLeft: "auto",
+    padding: 10,
+    backgroundColor: "red",
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
