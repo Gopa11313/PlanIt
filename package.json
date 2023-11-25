@@ -43,7 +43,7 @@
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-toast-message": "^2.1.6",
     "yarn": "^1.22.19",
-    "expo-splash-screen": "~0.20.5",
+  
     "expo-image-picker": "~14.3.2"
 
   },
