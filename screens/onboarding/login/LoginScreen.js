@@ -41,6 +41,7 @@ export default function Login({ navigation }) {
   };
 
   const handleLogIn = async () => {
+    validateForm();
     try {
       const auth = getAuth(); // Initialize the auth object
       const userCredential = await signInWithEmailAndPassword(

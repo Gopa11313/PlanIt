@@ -66,6 +66,7 @@ export default function Home({ navigation, route }) {
       });
       setImage[userData[0].Image[0]];
       setUserData(userData);
+      setData();
       console.log("user data: " + userData);
     } catch (error) {
       console.error("Error retrieving user data:", error);
