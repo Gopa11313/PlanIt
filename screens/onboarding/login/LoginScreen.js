@@ -14,7 +14,14 @@ import { TextInput } from "react-native-paper";
 import Logo from "../../../assets/photos/logo.png";
 import { db } from "../../../firebaseConfig";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+} from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login({ navigation }) {
@@ -49,6 +56,7 @@ export default function Login({ navigation }) {
         email,
         password
       );
+      await AsyncStorage.setItem("email", email);
       console.log("User logged in successfully!", userCredential.user.uid);
       getUserDocIdByEmail(email);
       navigation.navigate("Dashboard");
@@ -65,8 +73,9 @@ export default function Login({ navigation }) {
 
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
+
         await AsyncStorage.setItem("userDocId", JSON.stringify(userDoc.id));
-        await AsyncStorage.setItem("email", email);
+
         return;
       } else {
         console.log("No user found with this email");

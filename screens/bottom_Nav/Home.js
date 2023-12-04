@@ -39,7 +39,10 @@ export default function Home({ navigation, route }) {
     toggleModal();
   };
   const setData = () => {
-    console.log(userData[counter].Image[0]);
+    console.log("==============================");
+    console.log(userData[counter]);
+    console.log("==============================");
+    console.log("Iam here");
     setImage(userData[counter].Image[0]);
     setLocation(userData[counter].Address);
     setBio(userData[counter].Bio);
@@ -64,8 +67,9 @@ export default function Home({ navigation, route }) {
           userData.push(user);
         }
       });
-      setImage[userData[0].Image[0]];
+      // setImage[userData[0].Image[0]];
       setUserData(userData);
+      setCounter(0);
       setData();
       console.log("user data: " + userData);
     } catch (error) {
@@ -83,7 +87,6 @@ export default function Home({ navigation, route }) {
   };
   const gotoDeatial = () => {
     toggleModal();
-    console.log("HERE");
     console.log(userData[counter]);
     navigation.navigate("HomeProfileDetais", {
       userData: userData[counter - 1],

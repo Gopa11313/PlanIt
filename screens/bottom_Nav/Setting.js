@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -13,10 +13,23 @@ import Gurkirat from "../../assets/gurkirat.png";
 import pormotionBanner from "../../assets/secondImage.jpg";
 import { AntDesign, Ionicons, FontAwesome, Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-
-import { getAuth } from "firebase/auth";
+import { db } from "../../firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+} from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Settings({ navigation }) {
+  useEffect(() => {
+    getUserData();
+  }, []);
+  const [userData, setUserData] = useState(null);
   const handleLogout = async () => {
     const auth = getAuth();
     auth.signOut().then(() => {
@@ -36,6 +49,18 @@ export default function Settings({ navigation }) {
 
   const goToPreferences = () => {
     navigation.navigate("Preferences");
+  };
+  const getUserData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    console.log(email);
+    const q = query(collection(db, "Users"), where("email", "==", email));
+    const data = await getDocs(q);
+    data.forEach(async (doc) => {
+      // Delete each document
+      setUserData(...doc);
+      console.log(`my Data ${doc} `);
+    });
+    console.log(data);
   };
 
   return (
