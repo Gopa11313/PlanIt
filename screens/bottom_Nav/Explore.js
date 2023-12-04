@@ -27,9 +27,9 @@ export default function Explore({ navigation, route }) {
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const [events, setEvents] = useState(null);
+  const [events, setEvents] = useState([]);
   const [searchText, setSearchText] = useState("");
-
+  const [searchTerm, setSearchTerm] = useState("");
   // User's current location state
   const [userLocation, setUserLocation] = useState({
     latitude: 37.78825,
@@ -93,7 +93,9 @@ export default function Explore({ navigation, route }) {
       console.log(err);
     }
   };
-
+  const filteredData = events.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <SafeAreaView style={styles.container}>
       <MapView
@@ -105,9 +107,9 @@ export default function Explore({ navigation, route }) {
           longitudeDelta: 0.0421,
         }}
       >
-        {events &&
-          events.length > 0 &&
-          events.map((currMarker, index) => (
+        {filteredData &&
+          filteredData.length > 0 &&
+          filteredData.map((currMarker, index) => (
             <Marker
               key={index}
               coordinate={{
@@ -163,9 +165,9 @@ export default function Explore({ navigation, route }) {
       )}
       <TextInput
         style={styles.textInput}
-        placeholder="Enter a location..."
-        value={searchText}
-        onChangeText={(text) => setSearchText(text)}
+        placeholder="Enter a events..."
+        value={searchTerm}
+        onChangeText={(text) => setSearchTerm(text)}
       />
     </SafeAreaView>
   );

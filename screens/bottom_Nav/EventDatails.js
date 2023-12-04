@@ -17,6 +17,7 @@ import Ticket from "../../assets/ticket.png";
 import Dress from "../../assets/dress.png";
 import Location from "../../assets/location.png";
 import { db } from "../../firebaseConfig";
+import { v4 as uuidv4 } from "uuid";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { Toast } from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,6 +46,7 @@ export default function EventDetails({ route }) {
   const createFavorite = async () => {
     const value = await AsyncStorage.getItem("userDocId");
     const favDetails = {
+      Id: uuidv4(),
       userDocId: value,
       ...selectedMarker,
     };
