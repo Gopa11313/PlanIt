@@ -80,6 +80,12 @@ const SignUp = ({ navigation }) => {
       name: name,
       email: email,
       userName: userName,
+      Address: "",
+      Age: 18,
+      Bio: "",
+      Image: [],
+      preference: [],
+      userName: name + 123,
     };
     const insertedDocument = await addDoc(collection(db, "Users"), userDetails);
     console.log("docID: " + insertedDocument.id);
