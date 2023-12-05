@@ -86,6 +86,10 @@ export default function Chats({ navigation, route }) {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id}
+            contentContainerStyle={style.scroll}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           />
         </View>
       </SafeAreaView>

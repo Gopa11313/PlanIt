@@ -19,11 +19,10 @@ import {
   query,
   where,
   getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
 } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
 import { Toast } from "react-native-toast-message";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
 export default function Help({ navigation }) {
@@ -32,47 +31,29 @@ export default function Help({ navigation }) {
   const [problem, setProblem] = useState("");
   const [explanation, setExplanation] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
-  const showToast = () => {
-    Toast.show({
-      type: "success",
-      position: "bottom",
-      text1: "Success",
-      text2: "Button clicked!",
-    });
-  };
   const createHelp = async () => {
-    if (name != "" && email != "" && problem != "") {
-      const help = {
-        name: name,
-        email: email,
-        problem: problem,
-        explanation: explanation,
-        screentShot: selectedImage,
-      };
-      try {
-        const imageDownloadURL = await uploadImageToStorage(
-          selectedImage,
-          "help_image"
-        );
-
-        // Add the download URL to the 'help' object
-        help.screentShot = imageDownloadURL;
-
-        // Add the 'help' object to the 'Help' collection in Firestore
+    try {
+      if (name != "" && email != "" && problem != "") {
+        const help = {
+          Id: uuidv4(),
+          name: name,
+          email: email,
+          problem: problem,
+          explanation: explanation,
+          screentShot: selectedImage,
+        };
         const insertedDocument = await addDoc(collection(db, "Help"), help);
         console.log("Document inserted successfully:", insertedDocument);
         alert("Successfully added.");
-        showToast();
+
         setEmail("");
         setName("");
         setExplanation("");
-      } catch (error) {
-        console.error("Error inserting document:", error);
+      } else {
+        Alert("Please provide all the information");
       }
-      // const insertedDocument = await addDoc(collection(db, "Help"), help);
-      // console.log(insertedDocument);
-    } else {
-      Alert("Please provide all the information");
+    } catch (error) {
+      console.error("Error uploading help:", error);
     }
   };
   const handleImagePress = async () => {
@@ -100,11 +81,21 @@ export default function Help({ navigation }) {
 
   const uploadImage = async (uri) => {
     try {
-      const imageRef = storage.ref().child(`images/${name}`);
+      const mountainImagesRef = ref(storage, `images/${name}123.jpg`);
+      // const imageRef = storage.ref().child(`images/${name}`);
       // const imageRef = storage.ref().child(`images/${name}`);
       const response = await fetch(uri);
       const blob = await response.blob();
-      await imageRef.put(blob);
+      uploadBytes(mountainImagesRef, blob).then((snapshot) => {
+        console.log(snapshot.metadata);
+
+        console.log("Uploaded a blob or file!");
+      });
+      console.log("Gopal here");
+      const downloadURL = await getDownloadURL(mountainImagesRef);
+      setSelectedImage(downloadURL);
+      // console.log(downloadURL);
+      // await mountainImagesRef.put(blob);
     } catch (error) {
       console.error("Error uploading image:", error);
     }

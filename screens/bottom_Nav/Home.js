@@ -70,7 +70,12 @@ export default function Home({ navigation, route }) {
       // setImage[userData[0].Image[0]];
       setUserData(userData);
       setCounter(0);
-      setData();
+      setImage(userData[0].Image[0]);
+      setLocation(userData[0].Address);
+      setBio(userData[0].Bio);
+      setName(userData[0].name);
+      setAge(userData[0].Age);
+
       console.log("user data: " + userData);
     } catch (error) {
       console.error("Error retrieving user data:", error);
@@ -134,6 +139,9 @@ export default function Home({ navigation, route }) {
               <Image
                 source={{ uri: image }}
                 style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
+                onError={(e) =>
+                  console.log("Error loading image:", e.nativeEvent.error)
+                }
               />
               <Text style={styles.category}> {name}</Text>
             </View>

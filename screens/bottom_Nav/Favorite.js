@@ -145,6 +145,10 @@ export default function Favorite({ navigation, route }) {
             data={favoriteData}
             renderItem={renderItem}
             keyExtractor={(image, index) => index.toString()}
+            contentContainerStyle={style.scroll}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           />
         </View>
       </SafeAreaView>

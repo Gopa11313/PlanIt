@@ -27,8 +27,8 @@ import {
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const EditProfile = ({ route }) => {
-  const [userDoc, setUserDoc] = useState();
-  const [image1, setImage1] = useState("");
+  const [userDoc, setUserDoc] = useState(null);
+  const [images, setImages] = useState([]);
   const [image2, setImage2] = useState("");
   const [name, setNAme] = useState("");
   const [address, setaddress] = useState("");
@@ -37,69 +37,12 @@ const EditProfile = ({ route }) => {
     const userData = route.params;
     console.log(userData.userData);
     setUserDoc(userData.userData);
-    setImage1(userData.userData.Image[0]);
+    setImages(userData.userData.Image);
     setImage2(userData.userData.Image[1]);
     setaddress(userData.userData.Address);
     setNAme(userData.userData.name);
   }, []);
-  // const userData = route.params;
 
-  // const [images, setImages] = useState([]);
-  // const [selectedImage, setSelectedImage] = useState(null);
-
-  // useEffect(() => {
-  //   // Fetch user's images from Firebase Storage and populate the 'images' state.
-  //   // Replace 'yourUserId' with the actual user's ID or reference.
-  //   // Example: const userImagesRef = storage.ref('images/yourUserId');
-  //   const userImagesRef = storage.ref("images/yourUserId");
-
-  //   userImagesRef.listAll().then((result) => {
-  //     const imageUrls = result.items.map((item) => item.getDownloadURL());
-  //     Promise.all(imageUrls).then((urls) => {
-  //       setImages(urls);
-  //     });
-  //   });
-  // }, []);
-
-  // const openImagePicker = () => {
-  //   const options = {
-  //     title: "Select Image",
-  //     storageOptions: {
-  //       skipBackup: true,
-  //       path: "images",
-  //     },
-  //   };
-
-  //   ImagePicker.showImagePicker(options, (response) => {
-  //     if (response.didCancel) {
-  //       // User canceled the image picker.
-  //     } else if (response.error) {
-  //       // Handle error during image selection.
-  //     } else {
-  //       // Upload the selected image to Firebase Storage.
-  //       const imageRef = storage.ref(`images/yourUserId/${response.fileName}`);
-
-  //       imageRef.putFile(response.path).then(() => {
-  //         // Image uploaded successfully. Refresh the images list.
-  //         // You may also want to update your Firestore database to link this image to the user.
-  //         // Add the image URL to the 'images' state for display.
-  //         imageRef.getDownloadURL().then((url) => {
-  //           setImages([...images, url]);
-  //         });
-  //       });
-  //     }
-  //   });
-  // };
-
-  // const removeImage = (imageUrl) => {
-  //   // Remove the image from Firebase Storage.
-  //   const imageRef = storage.refFromURL(imageUrl);
-  //   imageRef.delete().then(() => {
-  //     // Image deleted successfully. Remove it from the 'images' state.
-  //     const updatedImages = images.filter((image) => image !== imageUrl);
-  //     setImages(updatedImages);
-  //   });
-  // };
   const updateUser = async () => {
     try {
       const userEmail = await AsyncStorage.getItem("email");
@@ -144,33 +87,45 @@ const EditProfile = ({ route }) => {
   const updateBtnClick = async () => {
     console.log("Gopal here");
     updateUser();
-    // const docRef = db.collection("Users").doc(userDoc.Id);
-
-    // await docRef.update({
-    //   name: name,
-    //   Address: address,
-    // });
   };
+  const renderItem = ({ item }) => (
+    <Pressable style={style.imageContainer}>
+      <Image
+        source={{ uri: item }}
+        style={style.imageView}
+        onError={(e) =>
+          console.log("Error loading image:", e.nativeEvent.error)
+        }
+      />
+    </Pressable>
+  );
   return (
     <View>
       <View style={{ flexDirection: "row" }}>
-        <Image
+        <FlatList
+          data={images}
+          style={style.flatlist}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled
+        />
+        {/* <Image
           source={{ uri: image1 }}
           style={style.imageView}
           onError={(e) =>
             console.log("Error loading image:", e.nativeEvent.error)
           }
         />
-        <Pressable style={style.addImageButton}>
-          <Image
-            source={{ uri: image2 }}
-            style={style.imageView}
-            onError={(e) =>
-              console.log("Error loading image:", e.nativeEvent.error)
-            }
-          />
-          {/* <Ionicons name="add-circle-outline" size={24} color="black" /> */}
-        </Pressable>
+
+        <Image
+          source={{ uri: image2 }}
+          style={style.imageView}
+          onError={(e) =>
+            console.log("Error loading image:", e.nativeEvent.error)
+          }
+        /> */}
       </View>
 
       <View style={style.infoInputBox}>
@@ -192,24 +147,6 @@ const EditProfile = ({ route }) => {
           <Text style={style.buttonText}>Save</Text>
         </Pressable>
       </View>
-      {/* {selectedImage && (
-        <Image
-          source={{ uri: selectedImage }}
-          style={{ width: 200, height: 200 }}
-        />
-      )} */}
-      {/* <FlatList
-        data={images}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <View>
-            <Image source={{ uri: item }} style={{ width: 100, height: 100 }} />
-            <TouchableOpacity onPress={() => removeImage(item)}>
-              <Text>Remove</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      /> */}
     </View>
   );
 };
@@ -221,6 +158,12 @@ const style = StyleSheet.create({
     backgroundColor: "#F0F0F0",
     paddingStart: 15,
     paddingEnd: 15,
+  },
+  imageContainer: {
+    width: "50%",
+  },
+  flatlist: {
+    width: "100%",
   },
   imageView: {
     width: 150,
