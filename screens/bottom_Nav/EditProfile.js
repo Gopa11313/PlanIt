@@ -133,27 +133,6 @@ const EditProfile = ({ route }) => {
         } else {
           console.log(`No user found with email ${userEmail}.`);
         }
-        // const querySnapshot = await getDocs(q);
-
-        // if (querySnapshot.size > 0) {
-        //   const data = querySnapshot.docs[0];
-        //   console.log("User document:", data.data());
-
-        //   // Access the 'Id' field correctly
-        //   const userDocRef = doc(db, "Users", data.data().id);
-
-        // const updateData = {
-        //   name: name,
-        //   Address: address,
-        // };
-
-        // if (image3 !== "") {
-        //   updateData.Image = arrayUnion(image3);
-        // }
-
-        // await updateDoc(querySnapshot, updateData);
-
-        // console.log("Document successfully updated!");
       } else {
         console.log("Email is null or undefined.");
       }
