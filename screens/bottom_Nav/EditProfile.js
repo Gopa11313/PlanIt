@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useDebugValue } from "react";
 import {
   StatusBar,
   View,
@@ -14,9 +14,36 @@ import Gurkirat from "../../assets/gurkirat.png";
 import ImagePicker from "react-native-image-picker";
 import { db, storage } from "../../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { TextInput } from "react-native-paper";
 
-const EditProfile = () => {
+const EditProfile = ({ route }) => {
+  const [userDoc, setUserDoc] = useState();
+  const [image1, setImage1] = useState("");
+  const [image2, setImage2] = useState("");
+  const [name, setNAme] = useState("");
+  const [address, setaddress] = useState("");
+  const [image3, setImage3] = useState("");
+  useEffect(() => {
+    const userData = route.params;
+    console.log(userData.userData);
+    setUserDoc(userData.userData);
+    setImage1(userData.userData.Image[0]);
+    setImage2(userData.userData.Image[1]);
+    setaddress(userData.userData.Address);
+    setNAme(userData.userData.name);
+  }, []);
+  // const userData = route.params;
+
   // const [images, setImages] = useState([]);
   // const [selectedImage, setSelectedImage] = useState(null);
 
@@ -73,23 +100,77 @@ const EditProfile = () => {
   //     setImages(updatedImages);
   //   });
   // };
+  const updateUser = async () => {
+    try {
+      console.log(userDoc.id);
+      const userDocRef = doc(db, "Users", userDoc.id);
+      console.log("Gopal here");
+      console.log(userDocRef);
+      // Update the 'chats' array by adding a new element
+      const updateData = {
+        name: name,
+        Address: address,
+      };
 
+      // Check if 'image3' is not an empty string before adding it to the update
+      if (image3 !== "") {
+        updateData.Image = arrayUnion(image3);
+      }
+
+      // Update the document
+      await updateDoc(userDocRef, updateData);
+
+      console.log("Document successfully updated!");
+    } catch (error) {
+      console.error("Error updating document:", error);
+    }
+  };
+  const updateBtnClick = () => {
+    updateUser();
+  };
   return (
     <View>
       <View style={{ flexDirection: "row" }}>
-        <Image style={style.imageView} source={Gurkirat} />
+        <Image
+          source={{ uri: image1 }}
+          style={style.imageView}
+          onError={(e) =>
+            console.log("Error loading image:", e.nativeEvent.error)
+          }
+        />
         <Pressable style={style.addImageButton}>
-          <Ionicons name="add-circle-outline" size={24} color="black" />
+          <Image
+            source={{ uri: image2 }}
+            style={style.imageView}
+            onError={(e) =>
+              console.log("Error loading image:", e.nativeEvent.error)
+            }
+          />
+          {/* <Ionicons name="add-circle-outline" size={24} color="black" /> */}
         </Pressable>
       </View>
 
       <View style={style.infoInputBox}>
-        <TextInput placeholder="Name"></TextInput>
-        <TextInput placeholder="Username"></TextInput>
+        <TextInput placeholder="Name" value={name} onChangeText={setNAme} />
+        <TextInput
+          placeholder="Address"
+          value={address}
+          onChangeText={setaddress}
+        />
+        <TextInput
+          placeholder="Add image"
+          value={image3}
+          onChangeText={setImage3}
+        />
       </View>
 
       <View style={{ alignItems: "center" }}>
-        <Pressable style={style.saveButton}>
+        <Pressable
+          style={style.saveButton}
+          onPress={() => {
+            updateBtnClick();
+          }}
+        >
           <Text style={style.buttonText}>Save</Text>
         </Pressable>
       </View>

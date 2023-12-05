@@ -12,7 +12,7 @@ import { db } from "../../../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
-
+import { v4 as uuidv4 } from "uuid";
 import Logo from "../../../assets/photos/logo.png";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -76,6 +76,7 @@ const SignUp = ({ navigation }) => {
 
   const storeUserData = async () => {
     const userDetails = {
+      Id: uuidv4(),
       name: name,
       email: email,
       userName: userName,

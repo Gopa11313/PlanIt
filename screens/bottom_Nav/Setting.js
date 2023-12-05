@@ -25,11 +25,16 @@ import {
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Settings({ navigation }) {
+export default function Settings({ navigation, route }) {
+  const [userData, setUserData] = useState(null);
+  const [image, setImage] = useState("");
+  const [name, setName] = useState("");
   useEffect(() => {
     getUserData();
+    console.log("========================");
+    console.log(userData);
   }, []);
-  const [userData, setUserData] = useState(null);
+
   const handleLogout = async () => {
     const auth = getAuth();
     auth.signOut().then(() => {
@@ -44,7 +49,7 @@ export default function Settings({ navigation }) {
   };
 
   const goToEditProfile = () => {
-    navigation.navigate("EditProfile");
+    navigation.navigate("EditProfile", { userData });
   };
 
   const goToPreferences = () => {
@@ -53,14 +58,26 @@ export default function Settings({ navigation }) {
   const getUserData = async () => {
     const email = await AsyncStorage.getItem("email");
     console.log(email);
-    const q = query(collection(db, "Users"), where("email", "==", email));
-    const data = await getDocs(q);
-    data.forEach(async (doc) => {
-      // Delete each document
-      setUserData(...doc);
-      console.log(`my Data ${doc} `);
-    });
-    console.log(data);
+    try {
+      const q = query(collection(db, "Users"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.size > 0) {
+        // Assuming there's only one document with the given email, get the first one
+        const userDoc = querySnapshot.docs[0].data();
+        setUserData(userDoc);
+        setImage(userDoc.Image[0]);
+        setName(userDoc.name);
+        return userDoc;
+      } else {
+        console.log(`No user found with email ${email}.`);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error retrieving user data:", error);
+      // Handle the error appropriately
+      throw error;
+    }
   };
 
   return (
@@ -68,9 +85,15 @@ export default function Settings({ navigation }) {
       <ScrollView style={style.scrollViewContent}>
         <View style={style.insideView}>
           <View style={style.topView}>
-            <Image style={style.profilImage} source={Gurkirat} />
+            <Image
+              source={{ uri: image }}
+              style={style.profilImage}
+              onError={(e) =>
+                console.log("Error loading image:", e.nativeEvent.error)
+              }
+            />
             <View style={style.profilNameView}>
-              <Text style={style.profileName}>Gurkirat</Text>
+              <Text style={style.profileName}>{name}</Text>
               <Text style={{ marginStart: 5, fontSize: 12 }}>
                 PlanIt Member
               </Text>
