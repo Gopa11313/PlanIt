@@ -25,7 +25,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { TextInput } from "react-native-paper";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const EditProfile = ({ route }) => {
   const [userDoc, setUserDoc] = useState();
   const [image1, setImage1] = useState("");
@@ -102,31 +102,75 @@ const EditProfile = ({ route }) => {
   // };
   const updateUser = async () => {
     try {
-      console.log(userDoc.id);
-      const userDocRef = doc(db, "Users", userDoc.id);
-      console.log("Gopal here");
-      console.log(userDocRef);
-      // Update the 'chats' array by adding a new element
-      const updateData = {
-        name: name,
-        Address: address,
-      };
+      const userEmail = await AsyncStorage.getItem("email");
 
-      // Check if 'image3' is not an empty string before adding it to the update
-      if (image3 !== "") {
-        updateData.Image = arrayUnion(image3);
+      if (userEmail) {
+        const q = query(
+          collection(db, "Users"),
+          where("email", "==", userEmail)
+        );
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot);
+        if (querySnapshot.size > 0) {
+          // Assuming you want the first document in the result set
+          const firstDocumentSnapshot = querySnapshot.docs[0];
+
+          // Get the DocumentReference from the snapshot
+          const documentRef = firstDocumentSnapshot.ref;
+          const updateData = {
+            name: name,
+            Address: address,
+          };
+
+          if (image3 !== "") {
+            updateData.Image = arrayUnion(image3);
+          }
+          // Now you can use documentRef to perform operations on that specific document
+          console.log("DocumentReference:", updateData);
+
+          // Example: Update the document
+          await updateDoc(documentRef, updateData);
+        } else {
+          console.log(`No user found with email ${userEmail}.`);
+        }
+        // const querySnapshot = await getDocs(q);
+
+        // if (querySnapshot.size > 0) {
+        //   const data = querySnapshot.docs[0];
+        //   console.log("User document:", data.data());
+
+        //   // Access the 'Id' field correctly
+        //   const userDocRef = doc(db, "Users", data.data().id);
+
+        // const updateData = {
+        //   name: name,
+        //   Address: address,
+        // };
+
+        // if (image3 !== "") {
+        //   updateData.Image = arrayUnion(image3);
+        // }
+
+        // await updateDoc(querySnapshot, updateData);
+
+        // console.log("Document successfully updated!");
+      } else {
+        console.log("Email is null or undefined.");
       }
-
-      // Update the document
-      await updateDoc(userDocRef, updateData);
-
-      console.log("Document successfully updated!");
     } catch (error) {
       console.error("Error updating document:", error);
     }
   };
-  const updateBtnClick = () => {
+
+  const updateBtnClick = async () => {
+    console.log("Gopal here");
     updateUser();
+    // const docRef = db.collection("Users").doc(userDoc.Id);
+
+    // await docRef.update({
+    //   name: name,
+    //   Address: address,
+    // });
   };
   return (
     <View>
@@ -165,12 +209,7 @@ const EditProfile = ({ route }) => {
       </View>
 
       <View style={{ alignItems: "center" }}>
-        <Pressable
-          style={style.saveButton}
-          onPress={() => {
-            updateBtnClick();
-          }}
-        >
+        <Pressable style={style.saveButton} onPress={updateBtnClick}>
           <Text style={style.buttonText}>Save</Text>
         </Pressable>
       </View>
