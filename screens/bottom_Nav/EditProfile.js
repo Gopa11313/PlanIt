@@ -73,6 +73,7 @@ const EditProfile = ({ route }) => {
 
           // Example: Update the document
           await updateDoc(documentRef, updateData);
+          alert("Updated successfully");
         } else {
           console.log(`No user found with email ${userEmail}.`);
         }

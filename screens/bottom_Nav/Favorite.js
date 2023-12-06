@@ -97,6 +97,7 @@ export default function Favorite({ navigation, route }) {
           // Delete each document
           await deleteDoc(doc.ref);
           console.log(`Document with ID ${documentId} deleted successfully.`);
+          alert("Deleted successfully");
         });
       } else {
         console.log(`No documents found with ID ${documentId}.`);
