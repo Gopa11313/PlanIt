@@ -84,7 +84,13 @@ const SignUp = ({ navigation }) => {
       Age: 18,
       Bio: "",
       Image: [],
-      preference: [],
+      preference: {
+        sports: false,
+        movies: false,
+        music: false,
+        food: false,
+        travel: false,
+      },
       userName: name + 123,
     };
     const insertedDocument = await addDoc(collection(db, "Users"), userDetails);
@@ -93,7 +99,7 @@ const SignUp = ({ navigation }) => {
       "userDocId",
       JSON.stringify(insertedDocument.id)
     );
-    navigation.navigate("Dashboard");
+    gotoLogin();
   };
 
   return (

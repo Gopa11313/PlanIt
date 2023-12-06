@@ -22,6 +22,7 @@ import {
   where,
   getDoc,
   doc,
+  arrayUnion,
   updateDoc,
 } from "firebase/firestore";
 import { TextInput } from "react-native-paper";

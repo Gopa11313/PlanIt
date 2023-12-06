@@ -32,8 +32,8 @@ export default function Explore({ navigation, route }) {
   const [searchTerm, setSearchTerm] = useState("");
   // User's current location state
   const [userLocation, setUserLocation] = useState({
-    latitude: 37.78825,
-    longitude: -122.4324,
+    latitude: 43.653225,
+    longitude: -79.383186,
   });
 
   const toggleModal = () => {
