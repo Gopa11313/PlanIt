@@ -40,7 +40,10 @@ export default function Home({ navigation, route }) {
     toggleModal();
   };
   const setData = () => {
-    console.log(userData[counter].Image[0]);
+    console.log("==============================");
+    console.log(userData[counter]);
+    console.log("==============================");
+    console.log("Iam here");
     setImage(userData[counter].Image[0]);
     setLocation(userData[counter].Address);
     setBio(userData[counter].Bio);
@@ -65,8 +68,15 @@ export default function Home({ navigation, route }) {
           userData.push(user);
         }
       });
-      setImage[userData[0].Image[0]];
+      // setImage[userData[0].Image[0]];
       setUserData(userData);
+      setCounter(0);
+      setImage(userData[0].Image[0]);
+      setLocation(userData[0].Address);
+      setBio(userData[0].Bio);
+      setName(userData[0].name);
+      setAge(userData[0].Age);
+
       console.log("user data: " + userData);
     } catch (error) {
       console.error("Error retrieving user data:", error);
@@ -83,7 +93,6 @@ export default function Home({ navigation, route }) {
   };
   const gotoDeatial = () => {
     toggleModal();
-    console.log("HERE");
     console.log(userData[counter]);
     navigation.navigate("HomeProfileDetais", {
       userData: userData[counter - 1],
@@ -131,6 +140,9 @@ export default function Home({ navigation, route }) {
               <Image
                 source={{ uri: image }}
                 style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
+                onError={(e) =>
+                  console.log("Error loading image:", e.nativeEvent.error)
+                }
               />
               <Text style={styles.category}> {name}</Text>
             </View>

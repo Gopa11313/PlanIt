@@ -12,7 +12,7 @@ import { db } from "../../../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
-
+import { v4 as uuidv4 } from "uuid";
 import Logo from "../../../assets/photos/logo.png";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -76,9 +76,22 @@ const SignUp = ({ navigation }) => {
 
   const storeUserData = async () => {
     const userDetails = {
+      Id: uuidv4(),
       name: name,
       email: email,
       userName: userName,
+      Address: "",
+      Age: 18,
+      Bio: "",
+      Image: [],
+      preference: {
+        sports: false,
+        movies: false,
+        music: false,
+        food: false,
+        travel: false,
+      },
+      userName: name + 123,
     };
     const insertedDocument = await addDoc(collection(db, "Users"), userDetails);
     console.log("docID: " + insertedDocument.id);
@@ -86,7 +99,7 @@ const SignUp = ({ navigation }) => {
       "userDocId",
       JSON.stringify(insertedDocument.id)
     );
-    navigation.navigate("Dashboard");
+    gotoLogin();
   };
 
   return (
