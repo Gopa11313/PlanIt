@@ -6,12 +6,13 @@ import {
   Image,
   Button,
   FlatList,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   Pressable,
 } from "react-native";
 import Gurkirat from "../../assets/gurkirat.png";
-import ImagePicker from "react-native-image-picker";
+import * as ImagePicker from 'expo-image-picker';
 import { db, storage } from "../../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -102,7 +103,7 @@ const EditProfile = ({ route }) => {
     </Pressable>
   );
   return (
-    <View>
+    <View style={style.container}>
       <View style={{ flexDirection: "row" }}>
         <FlatList
           data={images}
@@ -141,6 +142,26 @@ const EditProfile = ({ route }) => {
           placeholder="Add image"
           value={image3}
           onChangeText={setImage3}
+        {selectedImage ? (
+          <Image style={style.imageView} source={{ uri: selectedImage }} />
+        ) : (
+          <Image style={style.imageView} source={Gurkirat} />
+        )}
+        <Pressable style={style.addImageButton} onPress={handleImagePress}>
+          <Text>Add Image</Text>
+        </Pressable>
+      </View>
+
+      <View style={style.infoInputBox}>
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+        />
+        <TextInput
+          placeholder="Username"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
         />
       </View>
 
@@ -149,6 +170,16 @@ const EditProfile = ({ route }) => {
           <Text style={style.buttonText}>Save</Text>
         </Pressable>
       </View>
+        <Pressable style={style.saveButton} onPress={updateUserData}>
+          <Text style={style.buttonText}>Save</Text>
+        </Pressable>
+      </View>
+
+      {selectedImage && (
+        <TouchableOpacity onPress={removeImage}>
+          <Text style={{ color: "red", textAlign: "center" }}>Remove Image</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
