@@ -42,7 +42,7 @@ export default function Messages({ route }) {
     if (message != "") {
       // const newMessage = { message: message, name: data.name };
       const newChatObject = {
-        message: "another message",
+        message: message,
         name: "Another Name",
       };
       updateChatsArray(data.id, newChatObject);
@@ -59,7 +59,9 @@ export default function Messages({ route }) {
       await updateDoc(userDocRef, {
         chats: arrayUnion(newChat),
       });
-      data.chats.add(newChat);
+      console.log(data.chats);
+      data.chats.push(newChat);
+      setMessage("");
       console.log("Document successfully updated!");
     } catch (error) {
       console.error("Error updating document:", error);

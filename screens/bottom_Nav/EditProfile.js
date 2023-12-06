@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useDebugValue } from "react";
 import {
   StatusBar,
   View,
@@ -15,106 +15,133 @@ import Gurkirat from "../../assets/gurkirat.png";
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage } from "../../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+  doc,
+  arrayUnion,
+  updateDoc,
+} from "firebase/firestore";
 import { TextInput } from "react-native-paper";
-import { collection, getDocs, updateDoc, addDoc, deleteDoc, doc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
-
-const EditProfile = () => {
-
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
-
+const EditProfile = ({ route }) => {
+  const [userDoc, setUserDoc] = useState(null);
+  const [images, setImages] = useState([]);
+  const [image2, setImage2] = useState("");
+  const [name, setNAme] = useState("");
+  const [address, setaddress] = useState("");
+  const [image3, setImage3] = useState("");
   useEffect(() => {
-    getAllUserData();
+    const userData = route.params;
+    console.log(userData.userData);
+    setUserDoc(userData.userData);
+    setImages(userData.userData.Image);
+    setImage2(userData.userData.Image[1]);
+    setaddress(userData.userData.Address);
+    setNAme(userData.userData.name);
   }, []);
 
-  async function getAllUserData() {
+  const updateUser = async () => {
     try {
-      const usersCollection = collection(db, "Users");
-      const querySnapshot = await getDocs(usersCollection);
-      const userData = [];
       const userEmail = await AsyncStorage.getItem("email");
-      querySnapshot.forEach((doc) => {
-        const user = {
-          id: doc.id,
-          ...doc.data(),
-        };
-        if (userEmail != doc.data().email) {
-          userData.push(user);
+
+      if (userEmail) {
+        const q = query(
+          collection(db, "Users"),
+          where("email", "==", userEmail)
+        );
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot);
+        if (querySnapshot.size > 0) {
+          // Assuming you want the first document in the result set
+          const firstDocumentSnapshot = querySnapshot.docs[0];
+
+          // Get the DocumentReference from the snapshot
+          const documentRef = firstDocumentSnapshot.ref;
+          const updateData = {
+            name: name,
+            Address: address,
+          };
+
+          if (image3 !== "") {
+            updateData.Image = arrayUnion(image3);
+          }
+          // Now you can use documentRef to perform operations on that specific document
+          console.log("DocumentReference:", updateData);
+
+          // Example: Update the document
+          await updateDoc(documentRef, updateData);
+          alert("Updated successfully");
+        } else {
+          console.log(`No user found with email ${userEmail}.`);
         }
-      });
-      setName(userData[0].name);
-      setUsername(userData[0].username);
-      // Fetch and set the image URL if available
-      setSelectedImage(userData[0].Image[0]);
-    } catch (error) {
-      console.error("Error retrieving user data:", error);
-    }
-  }
-
-  const updateUserData = async () => {
-    try {
-      const userDocumentId = "userDocumentId";
-      const userDocRef = doc(db, "Users", userDocumentId);
-      await updateDoc(userDocRef, {
-        name: name,
-        username: username,
-      });
-      console.log("User data updated successfully!");
-    } catch (error) {
-      console.error("Error updating user data:", error);
-    }
-  };
-
-  const handleImagePress = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
-      return;
-    }
-  
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1,
-      });
-  
-      if (!result.cancelled) {
-        setSelectedImage(result.uri);
-        uploadImage(result.uri);
+      } else {
+        console.log("Email is null or undefined.");
       }
     } catch (error) {
-      console.error("Error picking an image:", error);
-    }
-  };
-  
-  const uploadImage = async (uri) => {
-    try {
-      const imageRef = storage.ref().child(`images/${name}`);
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      await imageRef.put(blob);
-    } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error updating document:", error);
     }
   };
 
-  const removeImage = async () => {
-    try {
-      const imageRef = storage.ref().child(`images/${name}`);
-      await imageRef.delete();
-      setSelectedImage(null);
-    } catch (error) {
-      console.error("Error deleting image:", error);
-    }
+  const updateBtnClick = async () => {
+    console.log("Gopal here");
+    updateUser();
   };
-
+  const renderItem = ({ item }) => (
+    <Pressable style={style.imageContainer}>
+      <Image
+        source={{ uri: item }}
+        style={style.imageView}
+        onError={(e) =>
+          console.log("Error loading image:", e.nativeEvent.error)
+        }
+      />
+    </Pressable>
+  );
   return (
     <View style={style.container}>
       <View style={{ flexDirection: "row" }}>
+        <FlatList
+          data={images}
+          style={style.flatlist}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled
+        />
+        {/* <Image
+          source={{ uri: image1 }}
+          style={style.imageView}
+          onError={(e) =>
+            console.log("Error loading image:", e.nativeEvent.error)
+          }
+        />
+
+        <Image
+          source={{ uri: image2 }}
+          style={style.imageView}
+          onError={(e) =>
+            console.log("Error loading image:", e.nativeEvent.error)
+          }
+        /> */}
+      </View>
+
+      <View style={style.infoInputBox}>
+        <TextInput placeholder="Name" value={name} onChangeText={setNAme} />
+        <TextInput
+          placeholder="Address"
+          value={address}
+          onChangeText={setaddress}
+        />
+        <TextInput
+          placeholder="Add image"
+          value={image3}
+          onChangeText={setImage3}
         {selectedImage ? (
           <Image style={style.imageView} source={{ uri: selectedImage }} />
         ) : (
@@ -139,6 +166,10 @@ const EditProfile = () => {
       </View>
 
       <View style={{ alignItems: "center" }}>
+        <Pressable style={style.saveButton} onPress={updateBtnClick}>
+          <Text style={style.buttonText}>Save</Text>
+        </Pressable>
+      </View>
         <Pressable style={style.saveButton} onPress={updateUserData}>
           <Text style={style.buttonText}>Save</Text>
         </Pressable>
@@ -160,6 +191,12 @@ const style = StyleSheet.create({
     backgroundColor: "#F0F0F0",
     paddingStart: 15,
     paddingEnd: 15,
+  },
+  imageContainer: {
+    width: "50%",
+  },
+  flatlist: {
+    width: "100%",
   },
   imageView: {
     width: 150,

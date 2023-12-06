@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,20 @@ import {
   Pressable,
 } from "react-native";
 import { Checkbox, Colors } from "react-native-paper";
-
-const Preferences = () => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { db, storage } from "../../firebaseConfig";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+const Preferences = ({ route }) => {
+  const [userDoc, setUserDoc] = useState();
   const [preferences, setPreferences] = useState({
     sports: false,
     movies: false,
@@ -17,6 +29,18 @@ const Preferences = () => {
     food: false,
     travel: false,
   });
+  useEffect(() => {
+    const userData = route.params;
+    setUserDoc(userData.userData);
+    console.log(userData.userData);
+    setPreferences({
+      sports: userData.userData.preference.sports,
+      movies: userData.userData.preference.movies,
+      music: userData.userData.preference.music,
+      food: userData.userData.preference.food,
+      travel: userData.userData.preference.travel,
+    });
+  }, []);
 
   const handlePreferenceToggle = (preference) => {
     setPreferences((prevPreferences) => ({
@@ -28,8 +52,66 @@ const Preferences = () => {
   const savePreferences = () => {
     // You can implement logic to save the selected preferences to your backend here.
     console.log("Selected Preferences:", preferences);
+    updateUser();
   };
+  const updateUser = async () => {
+    try {
+      const userEmail = await AsyncStorage.getItem("email");
 
+      if (userEmail) {
+        const q = query(
+          collection(db, "Users"),
+          where("email", "==", userEmail)
+        );
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot);
+        if (querySnapshot.size > 0) {
+          // Assuming you want the first document in the result set
+          const firstDocumentSnapshot = querySnapshot.docs[0];
+
+          // Get the DocumentReference from the snapshot
+          const documentRef = firstDocumentSnapshot.ref;
+          const updateData = {
+            preference: preferences,
+          };
+
+          // Now you can use documentRef to perform operations on that specific document
+          console.log("DocumentReference:", updateData);
+
+          // Example: Update the document
+          await updateDoc(documentRef, updateData);
+          alert("Updated successfully");
+        } else {
+          console.log(`No user found with email ${userEmail}.`);
+        }
+        // const querySnapshot = await getDocs(q);
+
+        // if (querySnapshot.size > 0) {
+        //   const data = querySnapshot.docs[0];
+        //   console.log("User document:", data.data());
+
+        //   // Access the 'Id' field correctly
+        //   const userDocRef = doc(db, "Users", data.data().id);
+
+        // const updateData = {
+        //   name: name,
+        //   Address: address,
+        // };
+
+        // if (image3 !== "") {
+        //   updateData.Image = arrayUnion(image3);
+        // }
+
+        // await updateDoc(querySnapshot, updateData);
+
+        // console.log("Document successfully updated!");
+      } else {
+        console.log("Email is null or undefined.");
+      }
+    } catch (error) {
+      console.error("Error updating document:", error);
+    }
+  };
   return (
     <View style={style.container}>
       <Text style={style.title}>Select Your Preferences</Text>
@@ -69,7 +151,7 @@ const Preferences = () => {
         <Text>Travel</Text>
       </View>
       <View style={{ alignItems: "center" }}>
-        <Pressable style={style.saveButton}>
+        <Pressable onPress={savePreferences} style={style.saveButton}>
           <Text style={style.buttonText}>Save Preferences</Text>
         </Pressable>
       </View>

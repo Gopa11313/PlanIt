@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -7,16 +7,36 @@ import {
   Text,
   View,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Gurkirat from "../../assets/gurkirat.png";
 import pormotionBanner from "../../assets/secondImage.jpg";
 import { AntDesign, Ionicons, FontAwesome, Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import { db } from "../../firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+} from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { getAuth } from "firebase/auth";
+export default function Settings({ navigation, route }) {
+  const [userData, setUserData] = useState(null);
+  const [image, setImage] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const [name, setName] = useState("");
+  useEffect(() => {
+    getUserData();
+    console.log("========================");
+    console.log(userData);
+  }, []);
 
-export default function Settings({ navigation }) {
   const handleLogout = async () => {
     const auth = getAuth();
     auth.signOut().then(() => {
@@ -31,83 +51,127 @@ export default function Settings({ navigation }) {
   };
 
   const goToEditProfile = () => {
-    navigation.navigate("EditProfile");
+    navigation.navigate("EditProfile", { userData });
   };
 
   const goToPreferences = () => {
-    navigation.navigate("Preferences");
+    navigation.navigate("Preferences", { userData });
   };
+  const getUserData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    console.log(email);
+    try {
+      const q = query(collection(db, "Users"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
 
+      if (querySnapshot.size > 0) {
+        // Assuming there's only one document with the given email, get the first one
+        const userDoc = querySnapshot.docs[0].data();
+        setUserData(userDoc);
+        setImage(userDoc.Image[0]);
+        setName(userDoc.name);
+        return userDoc;
+      } else {
+        console.log(`No user found with email ${email}.`);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error retrieving user data:", error);
+      // Handle the error appropriately
+      throw error;
+    }
+  };
+  const onRefresh = () => {
+    getUserData();
+  };
   return (
-    <SafeAreaView style={style.container}>
-      <ScrollView style={style.scrollViewContent}>
-        <View style={style.insideView}>
-          <View style={style.topView}>
-            <Image style={style.profilImage} source={Gurkirat} />
-            <View style={style.profilNameView}>
-              <Text style={style.profileName}>Gurkirat</Text>
-              <Text style={{ marginStart: 5, fontSize: 12 }}>
-                PlanIt Member
-              </Text>
+    <ScrollView
+      contentContainerStyle={style.scroll}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <SafeAreaView style={style.container}>
+        <ScrollView style={style.scrollViewContent}>
+          <View style={style.insideView}>
+            <View style={style.topView}>
+              <Image
+                source={{ uri: image }}
+                style={style.profilImage}
+                onError={(e) =>
+                  console.log("Error loading image:", e.nativeEvent.error)
+                }
+              />
+              <View style={style.profilNameView}>
+                <Text style={style.profileName}>{name}</Text>
+                <Text style={{ marginStart: 5, fontSize: 12 }}>
+                  PlanIt Member
+                </Text>
+              </View>
+              <View style={style.iconView}>
+                <Pressable onPress={goToEditProfile}>
+                  <AntDesign name="edit" size={24} color="black" />
+                </Pressable>
+                <Pressable onPress={goToPreferences}>
+                  <Ionicons name="options" size={24} color="black" />
+                </Pressable>
+              </View>
             </View>
-            <View style={style.iconView}>
-              <Pressable onPress={goToEditProfile}>
-                <AntDesign name="edit" size={24} color="black" />
+
+            <View style={style.subContainers}>
+              <Image source={pormotionBanner} style={style.pormotionBanner} />
+            </View>
+            <View style={style.options}>
+              <AntDesign name="infocirlce" size={30} color="green" />
+              <View style={style.optionsInside}>
+                <Text style={style.optionsTitle}>Connections</Text>
+                <Text style={style.optionsDes}>
+                  Get connected to people and make friends
+                </Text>
+              </View>
+            </View>
+            <View style={style.options}>
+              <FontAwesome name="comment" size={30} color="green" />
+              <View style={style.optionsInside}>
+                <Text style={style.optionsTitle}>What people are saying?</Text>
+                <Text style={style.optionsDes}>
+                  The best app for events and making friends.
+                </Text>
+              </View>
+            </View>
+
+            <View style={style.bottomContainer}>
+              <View style={style.bottomInsideContainer}>
+                <Entypo name="new" size={24} color="black" />
+                <Text style={style.bottomInsideContainerText}>What's new</Text>
+              </View>
+              <View style={style.bottomInsideContainer}>
+                <AntDesign name="questioncircle" size={24} color="black" />
+                <Text
+                  style={style.bottomInsideContainerText}
+                  onPress={goToHelp}
+                >
+                  Help Center
+                </Text>
+              </View>
+            </View>
+
+            <View>
+              <Pressable style={style.logoutButton} onPress={handleLogout}>
+                <Text style={style.buttonText}>Logout</Text>
               </Pressable>
-              <Pressable onPress={goToPreferences}>
-                <Ionicons name="options" size={24} color="black" />
-              </Pressable>
-              <AntDesign name="setting" size={24} color="black" />
             </View>
           </View>
-
-          <View style={style.subContainers}>
-            <Image source={pormotionBanner} style={style.pormotionBanner} />
-          </View>
-          <View style={style.options}>
-            <AntDesign name="infocirlce" size={30} color="green" />
-            <View style={style.optionsInside}>
-              <Text style={style.optionsTitle}>Connections</Text>
-              <Text style={style.optionsDes}>
-                Get connected to people and make friends
-              </Text>
-            </View>
-          </View>
-          <View style={style.options}>
-            <FontAwesome name="comment" size={30} color="green" />
-            <View style={style.optionsInside}>
-              <Text style={style.optionsTitle}>What people are saying?</Text>
-              <Text style={style.optionsDes}>
-                The best app for events and making friends.
-              </Text>
-            </View>
-          </View>
-
-          <View style={style.bottomContainer}>
-            <View style={style.bottomInsideContainer}>
-              <Entypo name="new" size={24} color="black" />
-              <Text style={style.bottomInsideContainerText}>What's new</Text>
-            </View>
-            <View style={style.bottomInsideContainer}>
-              <AntDesign name="questioncircle" size={24} color="black" />
-              <Text style={style.bottomInsideContainerText} onPress={goToHelp}>
-                Help Center
-              </Text>
-            </View>
-          </View>
-
-          <View>
-            <Pressable style={style.logoutButton} onPress={handleLogout}>
-              <Text style={style.buttonText}>Logout</Text>
-            </Pressable>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
 const style = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
